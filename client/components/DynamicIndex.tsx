@@ -640,6 +640,18 @@ export default function DynamicIndex() {
           </div>
         </motion.section>
 
+        {/* Admin Access Button - Fixed position */}
+        <div className="fixed bottom-4 left-4 z-50">
+          <Button
+            onClick={() => window.location.href = '/admin'}
+            variant="outline"
+            size="sm"
+            className="bg-white/90 backdrop-blur border-gray-300 text-gray-700 hover:bg-white shadow-lg"
+          >
+            🔧 Admin
+          </Button>
+        </div>
+
         {/* Simple Footer */}
         <footer className="bg-slate-800 py-8">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

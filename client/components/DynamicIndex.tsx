@@ -214,10 +214,10 @@ export default function DynamicIndex() {
                     />
                     <div className="flex flex-col">
                       <span className="text-xs sm:text-sm text-green-600 font-medium">
-                        ✓ Subscribe & Save available
+                        {adminData.hero.subscribeText}
                       </span>
                       <span className="text-xs sm:text-sm text-blue-600 font-medium">
-                        ✓ Walmart+ offer eligible
+                        {adminData.hero.walmartText}
                       </span>
                     </div>
                   </div>
@@ -264,7 +264,7 @@ export default function DynamicIndex() {
                   size="sm"
                   className="w-full mt-2 text-sm text-blue-600 hover:text-blue-700"
                 >
-                  🎁 Special Offer Available
+                  {adminData.hero.specialOfferButtonText}
                 </Button>
               </div>
 
@@ -304,11 +304,11 @@ export default function DynamicIndex() {
         >
           <div className="max-w-6xl mx-auto">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-900 mb-8 sm:mb-12 lg:mb-16">
-              Why Choose Our Nutritious Snack Box?
+              {adminData.featuresSection.title}
             </h2>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {adminData.features.map((feature, index) => {
+              {adminData.featuresSection.features.map((feature, index) => {
                 const IconComponent = iconMap[feature.icon] || Package;
                 
                 return (

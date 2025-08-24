@@ -6,11 +6,21 @@ import { Button } from "@/components/ui/button";
 interface ExitIntentPopupProps {
   onClose: () => void;
   onSubscribe: (email?: string) => void;
+  title?: string;
+  description?: string;
+  buttonText?: string;
+  buttonLink?: string;
+  image?: string;
 }
 
 export function ExitIntentPopup({
   onClose,
   onSubscribe,
+  title = "👉 Subscribe now to be the first to know about our upcoming exclusive offers",
+  description = "👉 Join our mailing list and get the latest news and special deals before anyone else.",
+  buttonText = "👉 Subscribe Now",
+  buttonLink,
+  image,
 }: ExitIntentPopupProps) {
   const [email, setEmail] = useState("");
   const [isEmailValid, setIsEmailValid] = useState(false);
@@ -24,6 +34,10 @@ export function ExitIntentPopup({
   const handleSubscribe = () => {
     if (email.trim() && isEmailValid) {
       onSubscribe(email);
+    } else if (buttonLink) {
+      // If no email validation needed, just redirect to the link
+      window.open(buttonLink, '_blank');
+      onClose();
     }
   };
 
@@ -66,18 +80,27 @@ export function ExitIntentPopup({
             </div>
 
             <h2 className="text-xl md:text-2xl font-bold text-center mb-2 leading-tight">
-              👉 Subscribe now to be the first to know about our upcoming
-              exclusive offers
+              {title}
             </h2>
           </div>
 
           {/* Main Content */}
           <div className="p-6">
+            {/* Image */}
+            {image && (
+              <div className="text-center mb-4">
+                <img
+                  src={image}
+                  alt="Popup Image"
+                  className="w-20 h-20 object-cover rounded-full mx-auto shadow-lg"
+                />
+              </div>
+            )}
+
             {/* Subtext */}
             <div className="text-center mb-6">
               <p className="text-gray-600 text-base leading-relaxed">
-                👉 Join our mailing list and get the latest news and special
-                deals before anyone else.
+                {description}
               </p>
             </div>
 
@@ -105,11 +128,11 @@ export function ExitIntentPopup({
             <div className="space-y-4">
               <Button
                 onClick={handleSubscribe}
-                disabled={!email || !isEmailValid}
+                disabled={!buttonLink && (!email || !isEmailValid)}
                 className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-4 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
               >
                 <Bell className="mr-2 h-5 w-5" />
-                👉 Subscribe Now
+                {buttonText}
               </Button>
 
               <button

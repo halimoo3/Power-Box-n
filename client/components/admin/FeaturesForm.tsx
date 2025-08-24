@@ -54,20 +54,26 @@ const availableColors = [
 ];
 
 export function FeaturesForm() {
-  const [features, setFeatures] = useState<FeatureData[]>([]);
+  const [featuresSection, setFeaturesSection] = useState<{
+    title: string;
+    features: FeatureData[];
+  }>({
+    title: "",
+    features: []
+  });
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
   // Load data on mount
   useEffect(() => {
     const adminData = getAdminData();
-    setFeatures(adminData.features);
+    setFeaturesSection(adminData.featuresSection);
   }, []);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      saveSection('features', features);
+      saveSection('featuresSection', featuresSection);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
@@ -79,13 +85,20 @@ export function FeaturesForm() {
 
   const handleReset = () => {
     const adminData = getAdminData();
-    setFeatures(adminData.features);
+    setFeaturesSection(adminData.featuresSection);
+  };
+
+  const updateSectionTitle = (title: string) => {
+    setFeaturesSection(prev => ({ ...prev, title }));
   };
 
   const updateFeature = (index: number, field: keyof FeatureData, value: string) => {
-    const newFeatures = [...features];
-    newFeatures[index] = { ...newFeatures[index], [field]: value };
-    setFeatures(newFeatures);
+    setFeaturesSection(prev => ({
+      ...prev,
+      features: prev.features.map((feature, i) =>
+        i === index ? { ...feature, [field]: value } : feature
+      )
+    }));
   };
 
   const addFeature = () => {
@@ -97,18 +110,26 @@ export function FeaturesForm() {
       color: "blue",
       image: ""
     };
-    setFeatures([...features, newFeature]);
+    setFeaturesSection(prev => ({
+      ...prev,
+      features: [...prev.features, newFeature]
+    }));
   };
 
   const removeFeature = (index: number) => {
-    setFeatures(features.filter((_, i) => i !== index));
+    setFeaturesSection(prev => ({
+      ...prev,
+      features: prev.features.filter((_, i) => i !== index)
+    }));
   };
 
   const moveFeature = (fromIndex: number, toIndex: number) => {
-    const newFeatures = [...features];
-    const [movedFeature] = newFeatures.splice(fromIndex, 1);
-    newFeatures.splice(toIndex, 0, movedFeature);
-    setFeatures(newFeatures);
+    setFeaturesSection(prev => {
+      const newFeatures = [...prev.features];
+      const [movedFeature] = newFeatures.splice(fromIndex, 1);
+      newFeatures.splice(toIndex, 0, movedFeature);
+      return { ...prev, features: newFeatures };
+    });
   };
 
   const getIconComponent = (iconName: string) => {
@@ -124,14 +145,28 @@ export function FeaturesForm() {
         actions={
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <Star className="h-4 w-4" />
-            <span>{features.length} Features</span>
+            <span>{featuresSection.features.length} Features</span>
           </div>
         }
       />
 
+      {/* Section Title */}
+      <FormSection
+        title="Section Title"
+        description="Set the main title for the features section."
+      >
+        <TextField
+          label="Section Title"
+          value={featuresSection.title}
+          onChange={updateSectionTitle}
+          placeholder="Why Choose Our Nutritious Snack Box?"
+          required
+        />
+      </FormSection>
+
       {/* Features List */}
       <div className="space-y-6">
-        {features.map((feature, index) => {
+        {featuresSection.features.map((feature, index) => {
           const IconComponent = getIconComponent(feature.icon);
           
           return (
@@ -164,7 +199,7 @@ export function FeaturesForm() {
                         ↑
                       </Button>
                     )}
-                    {index < features.length - 1 && (
+                    {index < featuresSection.features.length - 1 && (
                       <Button
                         variant="outline"
                         size="sm"

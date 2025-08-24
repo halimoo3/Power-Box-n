@@ -28,10 +28,15 @@ export interface FeatureData {
 }
 
 export interface TrustData {
+  walmartTitle: string;
+  walmartSubtext: string;
+  sellerTitle: string;
   sellerRating: number;
   sellerReviewCount: number;
+  returnsTitle: string;
   returnsDays: number;
   returnsText: string;
+  ctaButtonText: string;
 }
 
 export interface GalleryData {
@@ -40,6 +45,44 @@ export interface GalleryData {
     url: string;
     title: string;
     description: string;
+  }>;
+}
+
+export interface ReviewData {
+  id: string;
+  name: string;
+  photo: string;
+  rating: number;
+  review: string;
+}
+
+export interface ReviewsData {
+  sectionTitle: string;
+  sectionDescription: string;
+  reviews: ReviewData[];
+  trustIndicatorText: string;
+}
+
+export interface FinalCtaData {
+  badgeIcon: string;
+  badgeText: string;
+  mainTitle: string;
+  description: string;
+  benefits: string[];
+  ctaButtonText: string;
+  trustBarItems: Array<{
+    icon: string;
+    text: string;
+    color: string;
+  }>;
+}
+
+export interface FooterData {
+  socialLinks: Array<{
+    platform: string;
+    url: string;
+    icon: string;
+    hoverColor: string;
   }>;
 }
 

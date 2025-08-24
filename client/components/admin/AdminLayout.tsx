@@ -1,15 +1,16 @@
 import { useState } from "react";
-import { 
-  Settings, 
-  Home, 
-  Star, 
-  Search, 
+import {
+  Settings,
+  Home,
+  Star,
+  Search,
   Megaphone,
   Menu,
   X,
   LogOut,
   Save,
-  Eye
+  Eye,
+  Shield
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -39,6 +40,36 @@ const sidebarItems = [
     label: "Features Section",
     icon: Star,
     description: "Feature cards with images and text"
+  },
+  {
+    id: "trust",
+    label: "Trust Section",
+    icon: Shield,
+    description: "Walmart seller info and returns policy"
+  },
+  {
+    id: "gallery",
+    label: "Gallery Section",
+    icon: Settings,
+    description: "Product gallery images"
+  },
+  {
+    id: "reviews",
+    label: "Customer Reviews",
+    icon: Star,
+    description: "Customer testimonials and ratings"
+  },
+  {
+    id: "finalcta",
+    label: "Final CTA Section",
+    icon: Megaphone,
+    description: "Final call-to-action with benefits"
+  },
+  {
+    id: "footer",
+    label: "Footer",
+    icon: Settings,
+    description: "Social media links and footer content"
   },
   {
     id: "popups",

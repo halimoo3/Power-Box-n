@@ -11,10 +11,14 @@ export interface HeroData {
   rating: number;
   reviewCount: number;
   salePrice: number;
+  originalPrice: number;
+  subscribeText: string;
+  walmartText: string;
   deliveryDate: string;
   stockText: string;
   primaryButtonText: string;
   secondaryButtonText: string;
+  specialOfferButtonText: string;
   productImages: string[];
 }
 
@@ -99,9 +103,15 @@ export interface PopupData {
 export interface AdminData {
   seo: SeoData;
   hero: HeroData;
-  features: FeatureData[];
+  featuresSection: {
+    title: string;
+    features: FeatureData[];
+  };
   trust: TrustData;
   gallery: GalleryData;
+  reviews: ReviewsData;
+  finalCta: FinalCtaData;
+  footer: FooterData;
   popups: PopupData[];
   lastUpdated: string;
 }

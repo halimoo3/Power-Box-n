@@ -17,10 +17,14 @@ export function HeroForm() {
     rating: 0,
     reviewCount: 0,
     salePrice: 0,
+    originalPrice: 0,
+    subscribeText: "",
+    walmartText: "",
     deliveryDate: "",
     stockText: "",
     primaryButtonText: "",
     secondaryButtonText: "",
+    specialOfferButtonText: "",
     productImages: []
   });
   const [isSaving, setIsSaving] = useState(false);
@@ -118,15 +122,45 @@ export function HeroForm() {
             />
           </div>
 
-          <NumberField
-            label="Sale Price ($)"
-            value={heroData.salePrice}
-            onChange={(value) => updateField('salePrice', value)}
-            min={0}
-            step={0.01}
-            placeholder="31.95"
-            required
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <NumberField
+              label="Sale Price ($)"
+              value={heroData.salePrice}
+              onChange={(value) => updateField('salePrice', value)}
+              min={0}
+              step={0.01}
+              placeholder="31.95"
+              required
+            />
+
+            <NumberField
+              label="Original Price ($)"
+              value={heroData.originalPrice}
+              onChange={(value) => updateField('originalPrice', value)}
+              min={0}
+              step={0.01}
+              placeholder="43.19"
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <TextField
+              label="Subscribe & Save Text"
+              value={heroData.subscribeText}
+              onChange={(value) => updateField('subscribeText', value)}
+              placeholder="✓ Subscribe & Save available"
+              required
+            />
+
+            <TextField
+              label="Walmart+ Text"
+              value={heroData.walmartText}
+              onChange={(value) => updateField('walmartText', value)}
+              placeholder="✓ Walmart+ offer eligible"
+              required
+            />
+          </div>
         </div>
       </FormSection>
 
@@ -173,6 +207,14 @@ export function HeroForm() {
             value={heroData.secondaryButtonText}
             onChange={(value) => updateField('secondaryButtonText', value)}
             placeholder="Learn More About This Product"
+            required
+          />
+
+          <TextField
+            label="Special Offer Button Text"
+            value={heroData.specialOfferButtonText}
+            onChange={(value) => updateField('specialOfferButtonText', value)}
+            placeholder="🎁 Special Offer Available"
             required
           />
         </div>
@@ -262,8 +304,17 @@ export function HeroForm() {
               </span>
             </div>
 
-            <div className="text-2xl font-bold text-green-600">
-              ${heroData.salePrice.toFixed(2)}
+            <div className="space-y-2">
+              <div className="text-2xl font-bold text-green-600">
+                ${heroData.salePrice.toFixed(2)}
+              </div>
+              {heroData.originalPrice > 0 && (
+                <div className="text-lg text-gray-500 line-through">
+                  ${heroData.originalPrice.toFixed(2)}
+                </div>
+              )}
+              <div className="text-sm text-green-600">{heroData.subscribeText}</div>
+              <div className="text-sm text-blue-600">{heroData.walmartText}</div>
             </div>
 
             <div className="text-green-800 font-semibold">
@@ -280,6 +331,9 @@ export function HeroForm() {
               </div>
               <div className="border-2 border-blue-600 text-blue-600 px-6 py-3 rounded-lg text-center font-semibold">
                 {heroData.secondaryButtonText || "Secondary Button"}
+              </div>
+              <div className="text-blue-600 text-sm text-center font-medium">
+                {heroData.specialOfferButtonText || "Special Offer Button"}
               </div>
             </div>
 

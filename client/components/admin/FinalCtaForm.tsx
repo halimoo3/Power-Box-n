@@ -354,54 +354,75 @@ export function FinalCtaForm() {
         description="Preview how the complete final CTA section will look."
       >
         <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-2xl p-8">
-          {/* Header Section */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-              <span>{finalCtaData.badgeIcon || "🔥"}</span>
-              <span>{finalCtaData.badgeText || "Badge Text"}</span>
-            </div>
-
-            <h2 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
-              {finalCtaData.mainTitle || "Main Title"}
-            </h2>
-
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              {finalCtaData.description || "Description goes here"}
-            </p>
-          </div>
-
-          {/* Benefits List */}
-          <div className="bg-white rounded-3xl shadow-2xl border-2 border-blue-200 p-8 mb-8 max-w-lg mx-auto">
-            <div className="space-y-3">
-              {finalCtaData.benefits.map((benefit, index) => (
-                <div key={index} className="flex items-center gap-3">
-                  <div className="bg-green-100 rounded-full p-1 flex-shrink-0">
-                    <Check className="h-4 w-4 text-green-600" />
-                  </div>
-                  <span className="text-gray-700 font-medium">{benefit}</span>
+          {/* Main Content Grid */}
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Product Image */}
+            <div className="text-center lg:text-left">
+              {finalCtaData.image ? (
+                <img
+                  src={finalCtaData.image}
+                  alt="Product Image"
+                  className="w-full max-w-md mx-auto lg:mx-0 rounded-2xl shadow-2xl"
+                />
+              ) : (
+                <div className="w-full max-w-md mx-auto lg:mx-0 h-64 bg-gray-200 rounded-2xl flex items-center justify-center">
+                  <span className="text-gray-500">No image uploaded</span>
                 </div>
-              ))}
+              )}
             </div>
-          </div>
 
-          {/* CTA Button */}
-          <div className="text-center mb-6">
-            <div className="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-6 text-xl font-bold rounded-2xl shadow-2xl inline-block">
-              {finalCtaData.ctaButtonText || "CTA Button Text"}
-            </div>
-          </div>
-
-          {/* Trust Bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-gray-600">
-            {finalCtaData.trustBarItems.map((item, index) => {
-              const IconComponent = getIconComponent(item.icon);
-              return (
-                <div key={index} className="flex items-center gap-2">
-                  <IconComponent className={`h-5 w-5 text-${item.color}-600`} />
-                  <span className="font-medium">{item.text}</span>
+            {/* Content */}
+            <div className="text-center lg:text-left">
+              {/* Header Section */}
+              <div className="mb-8">
+                <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                  <span>{finalCtaData.badgeIcon || "🔥"}</span>
+                  <span>{finalCtaData.badgeText || "Badge Text"}</span>
                 </div>
-              );
-            })}
+
+                <h2 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
+                  {finalCtaData.mainTitle || "Main Title"}
+                </h2>
+
+                <p className="text-lg text-gray-600">
+                  {finalCtaData.description || "Description goes here"}
+                </p>
+              </div>
+
+              {/* Benefits List */}
+              <div className="bg-white rounded-3xl shadow-2xl border-2 border-blue-200 p-8 mb-8">
+                <div className="space-y-3">
+                  {finalCtaData.benefits.map((benefit, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <div className="bg-green-100 rounded-full p-1 flex-shrink-0">
+                        <Check className="h-4 w-4 text-green-600" />
+                      </div>
+                      <span className="text-gray-700 font-medium">{benefit}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* CTA Button */}
+              <div className="text-center lg:text-left mb-6">
+                <div className="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-6 text-xl font-bold rounded-2xl shadow-2xl inline-block">
+                  {finalCtaData.ctaButtonText || "CTA Button Text"}
+                </div>
+              </div>
+
+              {/* Trust Bar */}
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 text-sm text-gray-600">
+                {finalCtaData.trustBarItems.map((item, index) => {
+                  const IconComponent = getIconComponent(item.icon);
+                  return (
+                    <div key={index} className="flex items-center gap-2">
+                      <IconComponent className={`h-5 w-5 text-${item.color}-600`} />
+                      <span className="font-medium">{item.text}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </FormSection>

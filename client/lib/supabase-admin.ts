@@ -5,7 +5,10 @@ import type { AdminData } from "./admin-storage";
 export async function checkSupabaseConnection(): Promise<boolean> {
   try {
     // Simple test to see if we can connect to Supabase
-    const { error } = await supabase.from("admin_content").select("count").limit(1);
+    const { error } = await supabase
+      .from("admin_content")
+      .select("count")
+      .limit(1);
     return !error;
   } catch (error) {
     console.warn("Supabase connection test failed:", error);
@@ -92,13 +95,19 @@ export async function getSupabaseAdminData(): Promise<AdminData | null> {
       try {
         adminData[row.section as keyof AdminData] = row.data;
       } catch (parseError) {
-        console.error(`Error parsing data for section ${row.section}:`, parseError);
+        console.error(
+          `Error parsing data for section ${row.section}:`,
+          parseError,
+        );
       }
     });
 
     return adminData as AdminData;
   } catch (error) {
-    console.error("Failed to fetch admin data:", error instanceof Error ? error.message : error);
+    console.error(
+      "Failed to fetch admin data:",
+      error instanceof Error ? error.message : error,
+    );
     return null;
   }
 }
@@ -134,7 +143,10 @@ export async function saveSupabaseAdminData(
     const results = await Promise.all(promises);
     return results.every((result) => result === true);
   } catch (error) {
-    console.error("Failed to save admin data:", error instanceof Error ? error.message : error);
+    console.error(
+      "Failed to save admin data:",
+      error instanceof Error ? error.message : error,
+    );
     return false;
   }
 }
@@ -162,7 +174,10 @@ export async function saveSupabaseSection<K extends keyof AdminData>(
 
     return true;
   } catch (error) {
-    console.error(`Failed to save section ${section}:`, error instanceof Error ? error.message : error);
+    console.error(
+      `Failed to save section ${section}:`,
+      error instanceof Error ? error.message : error,
+    );
     return false;
   }
 }
@@ -189,7 +204,10 @@ export async function migrateLocalStorageToSupabase(): Promise<boolean> {
 
     return success;
   } catch (error) {
-    console.error("Migration failed:", error instanceof Error ? error.message : error);
+    console.error(
+      "Migration failed:",
+      error instanceof Error ? error.message : error,
+    );
     return false;
   }
 }

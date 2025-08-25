@@ -139,7 +139,8 @@ CREATE POLICY "Enable all for users" ON admin_content
           database: false,
           storage: false,
           testing: false,
-          error: testError instanceof Error ? testError.message : "Unknown error",
+          error:
+            testError instanceof Error ? testError.message : "Unknown error",
         });
         setSetupMessage(
           "❌ Setup error. Please follow the manual setup instructions below.",

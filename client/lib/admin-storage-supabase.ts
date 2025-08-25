@@ -42,10 +42,15 @@ async function ensureConnection(): Promise<boolean> {
       try {
         await migrateLocalStorageToSupabase();
       } catch (migrationError) {
-        console.warn("Data migration failed, but continuing with Supabase:", migrationError);
+        console.warn(
+          "Data migration failed, but continuing with Supabase:",
+          migrationError,
+        );
       }
     } else {
-      console.warn("Supabase connection failed, will use localStorage fallback");
+      console.warn(
+        "Supabase connection failed, will use localStorage fallback",
+      );
     }
 
     return isConnected;
@@ -117,7 +122,10 @@ export async function getAdminData(): Promise<AdminData> {
       return getLocalStorageData();
     }
   } catch (error) {
-    console.error("Error fetching admin data:", error instanceof Error ? error.message : error);
+    console.error(
+      "Error fetching admin data:",
+      error instanceof Error ? error.message : error,
+    );
     return getLocalStorageData();
   }
 }
@@ -172,7 +180,10 @@ export async function saveAdminData(data: Partial<AdminData>): Promise<void> {
 
     console.log("Successfully saved data to Supabase");
   } catch (error) {
-    console.error("Error saving admin data:", error instanceof Error ? error.message : error);
+    console.error(
+      "Error saving admin data:",
+      error instanceof Error ? error.message : error,
+    );
     // Fallback to localStorage
     saveToLocalStorage(data);
     throw new Error("Failed to save data");
@@ -190,7 +201,10 @@ function saveToLocalStorage(data: Partial<AdminData>): void {
     };
     localStorage.setItem("snackbox_admin_data", JSON.stringify(updated));
   } catch (error) {
-    console.error("Error saving to localStorage:", error instanceof Error ? error.message : error);
+    console.error(
+      "Error saving to localStorage:",
+      error instanceof Error ? error.message : error,
+    );
   }
 }
 
@@ -221,7 +235,10 @@ export async function saveSection<K extends keyof AdminData>(
 
     console.log(`Successfully saved ${section} to Supabase`);
   } catch (error) {
-    console.error(`Error saving section ${section}:`, error instanceof Error ? error.message : error);
+    console.error(
+      `Error saving section ${section}:`,
+      error instanceof Error ? error.message : error,
+    );
     // Fallback to localStorage
     saveToLocalStorage({ [section]: data } as Partial<AdminData>);
     throw new Error("Failed to save section");

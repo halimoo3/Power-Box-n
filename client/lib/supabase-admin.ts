@@ -124,7 +124,7 @@ export async function saveSupabaseAdminData(
         );
 
         if (error) {
-          console.error(`Error saving ${section}:`, error);
+          console.error(`Error saving ${section}:`, error.message || error);
           return false;
         }
         return true;
@@ -134,7 +134,7 @@ export async function saveSupabaseAdminData(
     const results = await Promise.all(promises);
     return results.every((result) => result === true);
   } catch (error) {
-    console.error("Failed to save admin data:", error);
+    console.error("Failed to save admin data:", error instanceof Error ? error.message : error);
     return false;
   }
 }
@@ -156,13 +156,13 @@ export async function saveSupabaseSection<K extends keyof AdminData>(
     );
 
     if (error) {
-      console.error(`Error saving section ${section}:`, error);
+      console.error(`Error saving section ${section}:`, error.message || error);
       return false;
     }
 
     return true;
   } catch (error) {
-    console.error(`Failed to save section ${section}:`, error);
+    console.error(`Failed to save section ${section}:`, error instanceof Error ? error.message : error);
     return false;
   }
 }

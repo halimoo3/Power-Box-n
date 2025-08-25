@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getAdminData } from "@/lib/admin-storage-supabase";
+import { supabase } from "@/lib/supabase";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -103,6 +104,17 @@ export function AdminLayout({
   const handleExitAdmin = () => {
     // Navigate back to main site
     window.location.href = "/";
+  };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Force redirect anyway
+      window.location.href = "/login";
+    }
   };
 
   return (
@@ -197,6 +209,15 @@ export function AdminLayout({
             >
               <LogOut className="h-4 w-4 mr-2" />
               Exit Admin
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout}
+              className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
             </Button>
 
             {/* Last Updated */}

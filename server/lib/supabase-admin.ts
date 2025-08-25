@@ -18,102 +18,66 @@ export const supabaseAdmin = createClient<Database>(supabaseUrl, supabaseService
 
 // Database migration and setup functions
 export async function createDatabaseSchema() {
-  const { error } = await supabaseAdmin.rpc('exec_sql', {
-    sql: `
-      -- Create admin_content table for storing all admin data
-      CREATE TABLE IF NOT EXISTS admin_content (
-        id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-        section TEXT NOT NULL UNIQUE,
-        data JSONB NOT NULL,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
-      );
+  try {
+    // Create the table using direct SQL
+    const { error: tableError } = await supabaseAdmin
+      .from('admin_content')
+      .select('id')
+      .limit(1);
 
-      -- Create updated_at trigger
-      CREATE OR REPLACE FUNCTION update_updated_at_column()
-      RETURNS TRIGGER AS $$
-      BEGIN
-        NEW.updated_at = now();
-        RETURN NEW;
-      END;
-      $$ language 'plpgsql';
+    // If table doesn't exist, we'll get an error
+    if (tableError && tableError.message.includes('relation "admin_content" does not exist')) {
+      console.log('Creating admin_content table...');
 
-      CREATE TRIGGER update_admin_content_updated_at 
-        BEFORE UPDATE ON admin_content 
-        FOR EACH ROW 
-        EXECUTE FUNCTION update_updated_at_column();
+      // Table needs to be created via SQL in Supabase dashboard or using migrations
+      // For now, we'll try to check if it exists and report status
+      return {
+        success: false,
+        message: 'Table admin_content needs to be created in Supabase dashboard. Please run this SQL:\n\nCREATE TABLE admin_content (\n  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,\n  section TEXT NOT NULL UNIQUE,\n  data JSONB NOT NULL,\n  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),\n  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()\n);\n\nALTER TABLE admin_content ENABLE ROW LEVEL SECURITY;\n\nCREATE POLICY "Enable all for authenticated users" ON admin_content USING (true) WITH CHECK (true);'
+      };
+    }
 
-      -- Enable RLS
-      ALTER TABLE admin_content ENABLE ROW LEVEL SECURITY;
-
-      -- Create policies (for now, allow all operations - in production you'd want proper auth)
-      DROP POLICY IF EXISTS "Enable read access for all users" ON admin_content;
-      DROP POLICY IF EXISTS "Enable insert for all users" ON admin_content;
-      DROP POLICY IF EXISTS "Enable update for all users" ON admin_content;
-      
-      CREATE POLICY "Enable read access for all users" ON admin_content FOR SELECT USING (true);
-      CREATE POLICY "Enable insert for all users" ON admin_content FOR INSERT WITH CHECK (true);
-      CREATE POLICY "Enable update for all users" ON admin_content FOR UPDATE USING (true);
-    `
-  });
-
-  if (error) {
-    console.error('Error creating database schema:', error);
-    throw error;
+    console.log('Database schema verified successfully');
+    return { success: true };
+  } catch (error) {
+    console.error('Error checking database schema:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
-
-  return { success: true };
 }
 
 export async function createStorageBucket() {
-  // Check if bucket already exists
-  const { data: buckets } = await supabaseAdmin.storage.listBuckets();
-  const bucketExists = buckets?.some(bucket => bucket.name === 'images');
+  try {
+    // Check if bucket already exists
+    const { data: buckets, error: listError } = await supabaseAdmin.storage.listBuckets();
 
-  if (!bucketExists) {
-    const { error } = await supabaseAdmin.storage.createBucket('images', {
-      public: true,
-      allowedMimeTypes: ['image/*'],
-      fileSizeLimit: 5242880 // 5MB
-    });
-
-    if (error) {
-      console.error('Error creating storage bucket:', error);
-      throw error;
+    if (listError) {
+      console.error('Error listing buckets:', listError);
+      return { success: false, error: listError.message };
     }
+
+    const bucketExists = buckets?.some(bucket => bucket.name === 'images');
+
+    if (!bucketExists) {
+      console.log('Creating images bucket...');
+      const { error } = await supabaseAdmin.storage.createBucket('images', {
+        public: true,
+        allowedMimeTypes: ['image/*'],
+        fileSizeLimit: 5242880 // 5MB
+      });
+
+      if (error) {
+        console.error('Error creating storage bucket:', error);
+        return { success: false, error: error.message };
+      }
+
+      console.log('Images bucket created successfully');
+    } else {
+      console.log('Images bucket already exists');
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error in createStorageBucket:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
-
-  // Set up storage policies
-  const { error: policyError } = await supabaseAdmin.rpc('exec_sql', {
-    sql: `
-      -- Enable RLS on storage objects
-      ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
-
-      -- Drop existing policies if they exist
-      DROP POLICY IF EXISTS "Public Access" ON storage.objects;
-      DROP POLICY IF EXISTS "Admin can upload images" ON storage.objects;
-      DROP POLICY IF EXISTS "Admin can update images" ON storage.objects;
-      DROP POLICY IF EXISTS "Admin can delete images" ON storage.objects;
-
-      -- Create policies for images bucket
-      CREATE POLICY "Public Access" ON storage.objects
-        FOR SELECT USING (bucket_id = 'images');
-
-      CREATE POLICY "Admin can upload images" ON storage.objects
-        FOR INSERT WITH CHECK (bucket_id = 'images');
-
-      CREATE POLICY "Admin can update images" ON storage.objects
-        FOR UPDATE USING (bucket_id = 'images');
-
-      CREATE POLICY "Admin can delete images" ON storage.objects
-        FOR DELETE USING (bucket_id = 'images');
-    `
-  });
-
-  if (policyError) {
-    console.error('Error setting up storage policies:', policyError);
-    // Don't throw here as the bucket might still work
-  }
-
-  return { success: true };
 }

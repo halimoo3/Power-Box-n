@@ -397,7 +397,9 @@ export function FinalCtaForm() {
                       <div className="bg-green-100 rounded-full p-1 flex-shrink-0">
                         <Check className="h-4 w-4 text-green-600" />
                       </div>
-                      <span className="text-gray-700 font-medium">{benefit}</span>
+                      <span className="text-gray-700 font-medium">
+                        {benefit}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -416,7 +418,9 @@ export function FinalCtaForm() {
                   const IconComponent = getIconComponent(item.icon);
                   return (
                     <div key={index} className="flex items-center gap-2">
-                      <IconComponent className={`h-5 w-5 text-${item.color}-600`} />
+                      <IconComponent
+                        className={`h-5 w-5 text-${item.color}-600`}
+                      />
                       <span className="font-medium">{item.text}</span>
                     </div>
                   );

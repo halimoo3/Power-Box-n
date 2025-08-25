@@ -64,7 +64,8 @@ const fallbackReviews: ReviewData[] = [
 export function CustomerReviews() {
   const [reviewsData, setReviewsData] = useState({
     sectionTitle: "What Our Customers Say",
-    sectionDescription: "Join thousands of satisfied customers who love our nutritious snack boxes",
+    sectionDescription:
+      "Join thousands of satisfied customers who love our nutritious snack boxes",
     reviews: fallbackReviews,
     trustIndicatorText: "Based on verified customer reviews",
   });

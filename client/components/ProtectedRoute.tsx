@@ -14,9 +14,11 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     // Check current auth state
     const checkAuth = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
         setUser(user);
-        
+
         if (!user) {
           // Redirect to login if no user
           window.location.href = "/login";
@@ -32,15 +34,15 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     checkAuth();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (event === 'SIGNED_OUT' || !session) {
-          window.location.href = "/login";
-        } else if (session?.user) {
-          setUser(session.user);
-        }
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT" || !session) {
+        window.location.href = "/login";
+      } else if (session?.user) {
+        setUser(session.user);
       }
-    );
+    });
 
     return () => subscription.unsubscribe();
   }, []);

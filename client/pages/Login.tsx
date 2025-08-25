@@ -13,7 +13,7 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       setError("Please fill in all fields");
       return;
@@ -23,10 +23,12 @@ export default function Login() {
     setError("");
 
     try {
-      const { data, error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data, error: authError } = await supabase.auth.signInWithPassword(
+        {
+          email,
+          password,
+        },
+      );
 
       if (authError) {
         setError(authError.message);
@@ -62,7 +64,9 @@ export default function Login() {
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
                 <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h3 className="text-sm font-medium text-red-800">Login Failed</h3>
+                  <h3 className="text-sm font-medium text-red-800">
+                    Login Failed
+                  </h3>
                   <p className="text-sm text-red-700 mt-1">{error}</p>
                 </div>
               </div>

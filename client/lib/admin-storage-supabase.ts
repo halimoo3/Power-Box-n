@@ -240,6 +240,6 @@ export function hasAdminData(): boolean {
 }
 
 // Manual migration function (for development)
-export async function migrateToBabase(): Promise<boolean> {
+export async function migrateToSupabase(): Promise<boolean> {
   return await migrateLocalStorageToSupabase();
 }

@@ -183,11 +183,13 @@ export async function migrateLocalStorageToSupabase(): Promise<boolean> {
       console.log("Successfully migrated localStorage data to Supabase");
       // Optionally remove localStorage data after successful migration
       // localStorage.removeItem('snackbox_admin_data');
+    } else {
+      console.warn("Failed to migrate localStorage data to Supabase");
     }
 
     return success;
   } catch (error) {
-    console.error("Migration failed:", error);
+    console.error("Migration failed:", error instanceof Error ? error.message : error);
     return false;
   }
 }

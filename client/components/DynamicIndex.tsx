@@ -38,7 +38,7 @@ import { StickyCTA } from "@/components/StickyCTA";
 import { CustomerReviews } from "@/components/CustomerReviews";
 import { ExitIntentPopup } from "@/components/ExitIntentPopup";
 import { useExitIntent } from "@/hooks/use-exit-intent";
-import { getAdminData, AdminData } from "@/lib/admin-storage";
+import { getAdminData, AdminData } from "@/lib/admin-storage-supabase";
 
 // Icon mapping for features
 const iconMap: Record<string, React.ComponentType<any>> = {
@@ -66,16 +66,20 @@ export default function DynamicIndex() {
 
   // Load admin data on mount and set up SEO
   useEffect(() => {
-    const data = getAdminData();
-    setAdminData(data);
-    
-    // Update SEO meta tags
-    if (data.seo.metaTitle) {
-      document.title = data.seo.metaTitle;
-    }
-    
-    updateMetaTag('description', data.seo.metaDescription);
-    updateMetaTag('keywords', data.seo.metaKeywords);
+    const loadData = async () => {
+      const data = await getAdminData();
+      setAdminData(data);
+
+      // Update SEO meta tags
+      if (data.seo.metaTitle) {
+        document.title = data.seo.metaTitle;
+      }
+
+      updateMetaTag('description', data.seo.metaDescription);
+      updateMetaTag('keywords', data.seo.metaKeywords);
+    };
+
+    loadData();
   }, []);
 
   const updateMetaTag = (name: string, content: string) => {

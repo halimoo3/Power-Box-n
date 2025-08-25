@@ -8,7 +8,7 @@ import {
   FormSection 
 } from "./FormComponents";
 import { SectionHeader, SuccessToast } from "./AdminLayout";
-import { getAdminData, saveSection, FinalCtaData } from "@/lib/admin-storage";
+import { getAdminData, saveSection, FinalCtaData } from "@/lib/admin-storage-supabase";
 import { Megaphone, Plus, Trash2, Shield, Truck, BadgeCheck, Star, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -46,14 +46,17 @@ export function FinalCtaForm() {
 
   // Load data on mount
   useEffect(() => {
-    const adminData = getAdminData();
-    setFinalCtaData(adminData.finalCta);
+    const loadData = async () => {
+      const adminData = await getAdminData();
+      setFinalCtaData(adminData.finalCta);
+    };
+    loadData();
   }, []);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      saveSection('finalCta', finalCtaData);
+      await saveSection('finalCta', finalCtaData);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
@@ -63,8 +66,8 @@ export function FinalCtaForm() {
     }
   };
 
-  const handleReset = () => {
-    const adminData = getAdminData();
+  const handleReset = async () => {
+    const adminData = await getAdminData();
     setFinalCtaData(adminData.finalCta);
   };
 

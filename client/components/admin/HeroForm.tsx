@@ -7,7 +7,7 @@ import {
   FormSection 
 } from "./FormComponents";
 import { SectionHeader, SuccessToast } from "./AdminLayout";
-import { getAdminData, saveSection, HeroData } from "@/lib/admin-storage";
+import { getAdminData, saveSection, HeroData } from "@/lib/admin-storage-supabase";
 import { Home, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -32,14 +32,17 @@ export function HeroForm() {
 
   // Load data on mount
   useEffect(() => {
-    const adminData = getAdminData();
-    setHeroData(adminData.hero);
+    const loadData = async () => {
+      const adminData = await getAdminData();
+      setHeroData(adminData.hero);
+    };
+    loadData();
   }, []);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      saveSection('hero', heroData);
+      await saveSection('hero', heroData);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
@@ -49,8 +52,8 @@ export function HeroForm() {
     }
   };
 
-  const handleReset = () => {
-    const adminData = getAdminData();
+  const handleReset = async () => {
+    const adminData = await getAdminData();
     setHeroData(adminData.hero);
   };
 

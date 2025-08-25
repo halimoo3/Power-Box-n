@@ -5,7 +5,7 @@ import {
   FormSection 
 } from "./FormComponents";
 import { SectionHeader, SuccessToast } from "./AdminLayout";
-import { getAdminData, saveSection, FooterData } from "@/lib/admin-storage";
+import { getAdminData, saveSection, FooterData } from "@/lib/admin-storage-supabase";
 import { Settings, Plus, Trash2, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -26,14 +26,17 @@ export function FooterForm() {
 
   // Load data on mount
   useEffect(() => {
-    const adminData = getAdminData();
-    setFooterData(adminData.footer);
+    const loadData = async () => {
+      const adminData = await getAdminData();
+      setFooterData(adminData.footer);
+    };
+    loadData();
   }, []);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      saveSection('footer', footerData);
+      await saveSection('footer', footerData);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
@@ -43,8 +46,8 @@ export function FooterForm() {
     }
   };
 
-  const handleReset = () => {
-    const adminData = getAdminData();
+  const handleReset = async () => {
+    const adminData = await getAdminData();
     setFooterData(adminData.footer);
   };
 

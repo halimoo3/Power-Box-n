@@ -8,7 +8,7 @@ import {
   FormSection 
 } from "./FormComponents";
 import { SectionHeader, SuccessToast } from "./AdminLayout";
-import { getAdminData, saveSection, ReviewsData, ReviewData } from "@/lib/admin-storage";
+import { getAdminData, saveSection, ReviewsData, ReviewData } from "@/lib/admin-storage-supabase";
 import { Star, Plus, Trash2, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -24,14 +24,17 @@ export function ReviewsForm() {
 
   // Load data on mount
   useEffect(() => {
-    const adminData = getAdminData();
-    setReviewsData(adminData.reviews);
+    const loadData = async () => {
+      const adminData = await getAdminData();
+      setReviewsData(adminData.reviews);
+    };
+    loadData();
   }, []);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      saveSection('reviews', reviewsData);
+      await saveSection('reviews', reviewsData);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
@@ -41,8 +44,8 @@ export function ReviewsForm() {
     }
   };
 
-  const handleReset = () => {
-    const adminData = getAdminData();
+  const handleReset = async () => {
+    const adminData = await getAdminData();
     setReviewsData(adminData.reviews);
   };
 

@@ -9,7 +9,7 @@ import {
   FormSection 
 } from "./FormComponents";
 import { SectionHeader, SuccessToast } from "./AdminLayout";
-import { getAdminData, saveSection, FeatureData } from "@/lib/admin-storage";
+import { getAdminData, saveSection, FeatureData } from "@/lib/admin-storage-supabase";
 import { 
   Star, 
   Package, 
@@ -66,14 +66,17 @@ export function FeaturesForm() {
 
   // Load data on mount
   useEffect(() => {
-    const adminData = getAdminData();
-    setFeaturesSection(adminData.featuresSection);
+    const loadData = async () => {
+      const adminData = await getAdminData();
+      setFeaturesSection(adminData.featuresSection);
+    };
+    loadData();
   }, []);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      saveSection('featuresSection', featuresSection);
+      await saveSection('featuresSection', featuresSection);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
@@ -83,8 +86,8 @@ export function FeaturesForm() {
     }
   };
 
-  const handleReset = () => {
-    const adminData = getAdminData();
+  const handleReset = async () => {
+    const adminData = await getAdminData();
     setFeaturesSection(adminData.featuresSection);
   };
 

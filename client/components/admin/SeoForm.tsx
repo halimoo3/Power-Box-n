@@ -6,7 +6,7 @@ import {
   FormSection 
 } from "./FormComponents";
 import { SectionHeader, SuccessToast } from "./AdminLayout";
-import { getAdminData, saveSection, SeoData } from "@/lib/admin-storage";
+import { getAdminData, saveSection, SeoData } from "@/lib/admin-storage-supabase";
 import { Search } from "lucide-react";
 
 export function SeoForm() {
@@ -20,17 +20,20 @@ export function SeoForm() {
 
   // Load data on mount
   useEffect(() => {
-    const adminData = getAdminData();
-    setSeoData(adminData.seo);
+    const loadData = async () => {
+      const adminData = await getAdminData();
+      setSeoData(adminData.seo);
+    };
+    loadData();
   }, []);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      saveSection('seo', seoData);
+      await saveSection('seo', seoData);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
-      
+
       // Update the actual document head
       updateDocumentHead(seoData);
     } catch (error) {
@@ -40,8 +43,8 @@ export function SeoForm() {
     }
   };
 
-  const handleReset = () => {
-    const adminData = getAdminData();
+  const handleReset = async () => {
+    const adminData = await getAdminData();
     setSeoData(adminData.seo);
   };
 

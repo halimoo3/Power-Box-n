@@ -7,7 +7,7 @@ import {
   FormSection 
 } from "./FormComponents";
 import { SectionHeader, SuccessToast } from "./AdminLayout";
-import { getAdminData, saveSection, PopupData } from "@/lib/admin-storage";
+import { getAdminData, saveSection, PopupData } from "@/lib/admin-storage-supabase";
 import { Megaphone, MousePointer, ExternalLink, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -20,14 +20,17 @@ export function PopupsForm() {
 
   // Load data on mount
   useEffect(() => {
-    const adminData = getAdminData();
-    setPopups(adminData.popups);
+    const loadData = async () => {
+      const adminData = await getAdminData();
+      setPopups(adminData.popups);
+    };
+    loadData();
   }, []);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      saveSection('popups', popups);
+      await saveSection('popups', popups);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
@@ -37,8 +40,8 @@ export function PopupsForm() {
     }
   };
 
-  const handleReset = () => {
-    const adminData = getAdminData();
+  const handleReset = async () => {
+    const adminData = await getAdminData();
     setPopups(adminData.popups);
   };
 

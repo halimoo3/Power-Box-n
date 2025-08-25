@@ -6,7 +6,7 @@ import {
   FormSection 
 } from "./FormComponents";
 import { SectionHeader, SuccessToast } from "./AdminLayout";
-import { getAdminData, saveSection, TrustData } from "@/lib/admin-storage";
+import { getAdminData, saveSection, TrustData } from "@/lib/admin-storage-supabase";
 import { Shield } from "lucide-react";
 
 export function TrustForm() {
@@ -26,14 +26,17 @@ export function TrustForm() {
 
   // Load data on mount
   useEffect(() => {
-    const adminData = getAdminData();
-    setTrustData(adminData.trust);
+    const loadData = async () => {
+      const adminData = await getAdminData();
+      setTrustData(adminData.trust);
+    };
+    loadData();
   }, []);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      saveSection('trust', trustData);
+      await saveSection('trust', trustData);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
@@ -43,8 +46,8 @@ export function TrustForm() {
     }
   };
 
-  const handleReset = () => {
-    const adminData = getAdminData();
+  const handleReset = async () => {
+    const adminData = await getAdminData();
     setTrustData(adminData.trust);
   };
 

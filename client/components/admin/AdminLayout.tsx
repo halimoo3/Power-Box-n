@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Settings,
   Home,
@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { getAdminData } from "@/lib/admin-storage";
+import { getAdminData } from "@/lib/admin-storage-supabase";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -79,13 +79,21 @@ const sidebarItems = [
   }
 ];
 
-export function AdminLayout({ 
-  children, 
-  currentSection, 
-  onSectionChange 
+export function AdminLayout({
+  children,
+  currentSection,
+  onSectionChange
 }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const adminData = getAdminData();
+  const [lastUpdated, setLastUpdated] = useState<string>("");
+
+  useEffect(() => {
+    const loadData = async () => {
+      const adminData = await getAdminData();
+      setLastUpdated(adminData.lastUpdated);
+    };
+    loadData();
+  }, []);
 
   const handlePreviewSite = () => {
     // Open the main site in a new tab
@@ -193,7 +201,7 @@ export function AdminLayout({
             
             {/* Last Updated */}
             <div className="text-xs text-gray-500 pt-2 border-t">
-              Last updated: {new Date(adminData.lastUpdated).toLocaleString()}
+              Last updated: {lastUpdated ? new Date(lastUpdated).toLocaleString() : 'Loading...'}
             </div>
           </div>
         </div>

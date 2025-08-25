@@ -6,7 +6,7 @@ import {
   FormSection 
 } from "./FormComponents";
 import { SectionHeader, SuccessToast } from "./AdminLayout";
-import { getAdminData, saveSection, GalleryData } from "@/lib/admin-storage";
+import { getAdminData, saveSection, GalleryData } from "@/lib/admin-storage-supabase";
 import { Settings, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -20,14 +20,17 @@ export function GalleryForm() {
 
   // Load data on mount
   useEffect(() => {
-    const adminData = getAdminData();
-    setGalleryData(adminData.gallery);
+    const loadData = async () => {
+      const adminData = await getAdminData();
+      setGalleryData(adminData.gallery);
+    };
+    loadData();
   }, []);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      saveSection('gallery', galleryData);
+      await saveSection('gallery', galleryData);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
@@ -37,8 +40,8 @@ export function GalleryForm() {
     }
   };
 
-  const handleReset = () => {
-    const adminData = getAdminData();
+  const handleReset = async () => {
+    const adminData = await getAdminData();
     setGalleryData(adminData.gallery);
   };
 

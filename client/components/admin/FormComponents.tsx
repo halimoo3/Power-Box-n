@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, X, Save, RotateCcw } from "lucide-react";
+import { Upload, X, Save, RotateCcw, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { uploadImage, deleteImage } from "@/lib/supabase-admin";
 
 // Text Input Field
 interface TextFieldProps {
@@ -134,30 +135,54 @@ interface ImageUploadProps {
   className?: string;
 }
 
-export function ImageUpload({ 
-  label, 
-  value, 
-  onChange, 
-  placeholder = "Upload image or enter URL", 
-  required, 
-  className 
+export function ImageUpload({
+  label,
+  value,
+  onChange,
+  placeholder = "Upload image or enter URL",
+  required,
+  className
 }: ImageUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = (file: File) => {
-    // For now, we'll create a blob URL - in production with Supabase, this would upload to storage
-    const url = URL.createObjectURL(file);
-    onChange(url);
+  const handleFileSelect = async (file: File) => {
+    setIsUploading(true);
+    try {
+      // Generate a unique path for the image
+      const path = `admin_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      // Upload to Supabase Storage
+      const uploadedUrl = await uploadImage(file, path);
+
+      if (uploadedUrl) {
+        onChange(uploadedUrl);
+      } else {
+        console.error('Failed to upload image');
+        // Fallback to blob URL for local preview
+        const blobUrl = URL.createObjectURL(file);
+        onChange(blobUrl);
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      // Fallback to blob URL for local preview
+      const blobUrl = URL.createObjectURL(file);
+      onChange(blobUrl);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
+    if (isUploading) return;
+
     const files = Array.from(e.dataTransfer.files);
     const imageFile = files.find(file => file.type.startsWith('image/'));
-    
+
     if (imageFile) {
       handleFileSelect(imageFile);
     }
@@ -165,9 +190,17 @@ export function ImageUpload({
 
   const handleFileInput = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (file && !isUploading) {
       handleFileSelect(file);
     }
+  };
+
+  const handleDeleteImage = async () => {
+    if (value && value.includes('supabase')) {
+      // Try to delete from Supabase Storage
+      await deleteImage(value);
+    }
+    onChange("");
   };
 
   return (
@@ -190,33 +223,48 @@ export function ImageUpload({
       {/* Upload Area */}
       <div
         className={cn(
-          "border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer",
+          "border-2 border-dashed rounded-lg p-6 text-center transition-colors",
           isDragging
             ? "border-blue-500 bg-blue-50"
-            : "border-gray-300 hover:border-gray-400"
+            : "border-gray-300 hover:border-gray-400",
+          isUploading
+            ? "cursor-wait opacity-75"
+            : "cursor-pointer"
         )}
         onDragOver={(e) => {
           e.preventDefault();
-          setIsDragging(true);
+          if (!isUploading) setIsDragging(true);
         }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
-        onClick={() => fileInputRef.current?.click()}
+        onClick={() => !isUploading && fileInputRef.current?.click()}
       >
-        <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-        <p className="text-sm text-gray-600">
-          Click to upload or drag and drop
-        </p>
-        <p className="text-xs text-gray-500 mt-1">
-          PNG, JPG, GIF up to 10MB
-        </p>
-        
+        {isUploading ? (
+          <>
+            <Loader2 className="mx-auto h-12 w-12 text-blue-500 mb-4 animate-spin" />
+            <p className="text-sm text-blue-600 font-medium">
+              Uploading to Supabase Storage...
+            </p>
+          </>
+        ) : (
+          <>
+            <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+            <p className="text-sm text-gray-600">
+              Click to upload or drag and drop
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              PNG, JPG, GIF up to 5MB • Uploads to Supabase Storage
+            </p>
+          </>
+        )}
+
         <input
           ref={fileInputRef}
           type="file"
           accept="image/*"
           onChange={handleFileInput}
           className="hidden"
+          disabled={isUploading}
         />
       </div>
 
@@ -232,10 +280,23 @@ export function ImageUpload({
             variant="destructive"
             size="sm"
             className="absolute top-2 right-2"
-            onClick={() => onChange("")}
+            onClick={handleDeleteImage}
+            disabled={isUploading}
           >
             <X className="h-4 w-4" />
           </Button>
+
+          {/* Storage indicator */}
+          <div className="absolute bottom-2 left-2">
+            <span className={cn(
+              "px-2 py-1 text-xs rounded-full",
+              value.includes('supabase') || value.includes('ukyybenrsaeapesvvprd')
+                ? "bg-green-100 text-green-800"
+                : "bg-orange-100 text-orange-800"
+            )}>
+              {value.includes('supabase') || value.includes('ukyybenrsaeapesvvprd') ? "Supabase" : "Local"}
+            </span>
+          </div>
         </div>
       )}
     </div>

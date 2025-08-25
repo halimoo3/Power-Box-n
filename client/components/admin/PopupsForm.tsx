@@ -26,7 +26,44 @@ export function PopupsForm() {
   useEffect(() => {
     const loadData = async () => {
       const adminData = await getAdminData();
-      setPopups(adminData.popups);
+      // Ensure we have both required popup types
+      const popupsData = adminData.popups || [];
+
+      // Check if we have required popup types, if not create them
+      const buttonPopup = popupsData.find(p => p.type === "button-triggered");
+      const exitPopup = popupsData.find(p => p.type === "exit-intent");
+
+      const requiredPopups = [];
+
+      if (!buttonPopup) {
+        requiredPopups.push({
+          id: "button-popup",
+          title: "Special Offer!",
+          description: "Get 10% off your first order when you subscribe to our newsletter.",
+          buttonText: "Get My Discount",
+          buttonLink: "mailto:subscribe@example.com?subject=Newsletter%20Subscription",
+          image: "",
+          type: "button-triggered" as const,
+        });
+      } else {
+        requiredPopups.push(buttonPopup);
+      }
+
+      if (!exitPopup) {
+        requiredPopups.push({
+          id: "exit-popup",
+          title: "Wait! Don't Miss Out!",
+          description: "Join our newsletter for exclusive snack deals and new product alerts.",
+          buttonText: "Subscribe Now",
+          buttonLink: "mailto:newsletter@example.com?subject=Newsletter%20Subscription",
+          image: "",
+          type: "exit-intent" as const,
+        });
+      } else {
+        requiredPopups.push(exitPopup);
+      }
+
+      setPopups(requiredPopups);
     };
     loadData();
   }, []);

@@ -72,6 +72,7 @@ export interface FinalCtaData {
   badgeText: string;
   mainTitle: string;
   description: string;
+  image: string;
   benefits: string[];
   ctaButtonText: string;
   trustBarItems: Array<{
@@ -302,10 +303,11 @@ export const defaultAdminData: AdminData = {
     ],
   },
   finalCta: {
-    badgeIcon: "🔥",
+    badgeIcon: "���",
     badgeText: "Bestseller - Limited Time Offer",
     mainTitle: "Ready to Fuel Your Day?",
     description: "Get your 42-count nutritious snack box today!",
+    image: "https://cdn.builder.io/api/v1/image/assets%2F84282e2d620247d2b8d8845fda2c790e%2F79d471e5bc56457eb2c3b1c3eb6586ae?format=webp&width=800",
     benefits: [
       "42 premium snacks included",
       "Subscribe & Save available",

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import {
   TextField,
   TextAreaField,
+  ImageUpload,
   IconSelect,
   ColorSelect,
   ActionButtons,
@@ -50,6 +51,7 @@ export function FinalCtaForm() {
     badgeText: "",
     mainTitle: "",
     description: "",
+    image: "",
     benefits: [],
     ctaButtonText: "",
     trustBarItems: [],
@@ -198,6 +200,14 @@ export function FinalCtaForm() {
             onChange={(value) => updateField("description", value)}
             placeholder="Get your 42-count nutritious snack box today!"
             rows={2}
+            required
+          />
+
+          <ImageUpload
+            label="Product Image"
+            value={finalCtaData.image}
+            onChange={(value) => updateField("image", value)}
+            placeholder="Upload product image for the final CTA section"
             required
           />
         </div>

@@ -1,29 +1,33 @@
 import { useState, useEffect } from "react";
-import { 
-  TextField, 
+import {
+  TextField,
   TextAreaField,
   ImageUpload,
   ColorSelect,
   IconSelect,
-  ActionButtons, 
-  FormSection 
+  ActionButtons,
+  FormSection,
 } from "./FormComponents";
 import { SectionHeader, SuccessToast } from "./AdminLayout";
-import { getAdminData, saveSection, FeatureData } from "@/lib/admin-storage-supabase";
-import { 
-  Star, 
-  Package, 
-  Gift, 
-  Zap, 
-  Users, 
-  Heart, 
-  BadgeCheck, 
-  Shield, 
-  Clock, 
+import {
+  getAdminData,
+  saveSection,
+  FeatureData,
+} from "@/lib/admin-storage-supabase";
+import {
+  Star,
+  Package,
+  Gift,
+  Zap,
+  Users,
+  Heart,
+  BadgeCheck,
+  Shield,
+  Clock,
   Truck,
   Plus,
   Trash2,
-  GripVertical
+  GripVertical,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -38,7 +42,7 @@ const availableIcons = [
   { value: "Shield", label: "Shield", icon: Shield },
   { value: "Clock", label: "Clock", icon: Clock },
   { value: "Truck", label: "Truck", icon: Truck },
-  { value: "Star", label: "Star", icon: Star }
+  { value: "Star", label: "Star", icon: Star },
 ];
 
 // Available colors for features
@@ -50,7 +54,7 @@ const availableColors = [
   { value: "red", label: "Red", className: "bg-red-500" },
   { value: "indigo", label: "Indigo", className: "bg-indigo-500" },
   { value: "pink", label: "Pink", className: "bg-pink-500" },
-  { value: "yellow", label: "Yellow", className: "bg-yellow-500" }
+  { value: "yellow", label: "Yellow", className: "bg-yellow-500" },
 ];
 
 export function FeaturesForm() {
@@ -59,7 +63,7 @@ export function FeaturesForm() {
     features: FeatureData[];
   }>({
     title: "",
-    features: []
+    features: [],
   });
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -76,11 +80,11 @@ export function FeaturesForm() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await saveSection('featuresSection', featuresSection);
+      await saveSection("featuresSection", featuresSection);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
-      console.error('Error saving features data:', error);
+      console.error("Error saving features data:", error);
     } finally {
       setIsSaving(false);
     }
@@ -92,15 +96,19 @@ export function FeaturesForm() {
   };
 
   const updateSectionTitle = (title: string) => {
-    setFeaturesSection(prev => ({ ...prev, title }));
+    setFeaturesSection((prev) => ({ ...prev, title }));
   };
 
-  const updateFeature = (index: number, field: keyof FeatureData, value: string) => {
-    setFeaturesSection(prev => ({
+  const updateFeature = (
+    index: number,
+    field: keyof FeatureData,
+    value: string,
+  ) => {
+    setFeaturesSection((prev) => ({
       ...prev,
       features: prev.features.map((feature, i) =>
-        i === index ? { ...feature, [field]: value } : feature
-      )
+        i === index ? { ...feature, [field]: value } : feature,
+      ),
     }));
   };
 
@@ -111,23 +119,23 @@ export function FeaturesForm() {
       title: "New Feature",
       description: "Feature description goes here",
       color: "blue",
-      image: ""
+      image: "",
     };
-    setFeaturesSection(prev => ({
+    setFeaturesSection((prev) => ({
       ...prev,
-      features: [...prev.features, newFeature]
+      features: [...prev.features, newFeature],
     }));
   };
 
   const removeFeature = (index: number) => {
-    setFeaturesSection(prev => ({
+    setFeaturesSection((prev) => ({
       ...prev,
-      features: prev.features.filter((_, i) => i !== index)
+      features: prev.features.filter((_, i) => i !== index),
     }));
   };
 
   const moveFeature = (fromIndex: number, toIndex: number) => {
-    setFeaturesSection(prev => {
+    setFeaturesSection((prev) => {
       const newFeatures = [...prev.features];
       const [movedFeature] = newFeatures.splice(fromIndex, 1);
       newFeatures.splice(toIndex, 0, movedFeature);
@@ -136,7 +144,7 @@ export function FeaturesForm() {
   };
 
   const getIconComponent = (iconName: string) => {
-    const iconData = availableIcons.find(icon => icon.value === iconName);
+    const iconData = availableIcons.find((icon) => icon.value === iconName);
     return iconData ? iconData.icon : Package;
   };
 
@@ -171,7 +179,7 @@ export function FeaturesForm() {
       <div className="space-y-6">
         {featuresSection.features.map((feature, index) => {
           const IconComponent = getIconComponent(feature.icon);
-          
+
           return (
             <FormSection
               key={feature.id}
@@ -184,14 +192,20 @@ export function FeaturesForm() {
                   <div className="flex items-center gap-3">
                     <GripVertical className="h-5 w-5 text-gray-400" />
                     <div className={`p-2 rounded-lg bg-${feature.color}-100`}>
-                      <IconComponent className={`h-5 w-5 text-${feature.color}-600`} />
+                      <IconComponent
+                        className={`h-5 w-5 text-${feature.color}-600`}
+                      />
                     </div>
                     <div>
-                      <div className="font-medium text-gray-900">{feature.title}</div>
-                      <div className="text-sm text-gray-500">Feature {index + 1}</div>
+                      <div className="font-medium text-gray-900">
+                        {feature.title}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        Feature {index + 1}
+                      </div>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     {index > 0 && (
                       <Button
@@ -228,7 +242,7 @@ export function FeaturesForm() {
                     <TextField
                       label="Feature Title"
                       value={feature.title}
-                      onChange={(value) => updateFeature(index, 'title', value)}
+                      onChange={(value) => updateFeature(index, "title", value)}
                       placeholder="Enter feature title"
                       required
                     />
@@ -236,7 +250,9 @@ export function FeaturesForm() {
                     <TextAreaField
                       label="Feature Description"
                       value={feature.description}
-                      onChange={(value) => updateFeature(index, 'description', value)}
+                      onChange={(value) =>
+                        updateFeature(index, "description", value)
+                      }
                       placeholder="Describe this feature's benefit"
                       rows={3}
                       required
@@ -245,14 +261,14 @@ export function FeaturesForm() {
                     <IconSelect
                       label="Feature Icon"
                       value={feature.icon}
-                      onChange={(value) => updateFeature(index, 'icon', value)}
+                      onChange={(value) => updateFeature(index, "icon", value)}
                       options={availableIcons}
                     />
 
                     <ColorSelect
                       label="Feature Color"
                       value={feature.color}
-                      onChange={(value) => updateFeature(index, 'color', value)}
+                      onChange={(value) => updateFeature(index, "color", value)}
                       options={availableColors}
                     />
                   </div>
@@ -261,7 +277,7 @@ export function FeaturesForm() {
                     <ImageUpload
                       label="Feature Image"
                       value={feature.image}
-                      onChange={(value) => updateFeature(index, 'image', value)}
+                      onChange={(value) => updateFeature(index, "image", value)}
                       placeholder="Upload feature image"
                       required
                     />
@@ -270,7 +286,9 @@ export function FeaturesForm() {
 
                 {/* Feature Preview */}
                 <div className="mt-6 p-4 border rounded-lg bg-gray-50">
-                  <div className="text-sm font-medium text-gray-700 mb-3">Preview:</div>
+                  <div className="text-sm font-medium text-gray-700 mb-3">
+                    Preview:
+                  </div>
                   <div className="bg-white rounded-lg shadow-lg border-2 border-blue-200 overflow-hidden max-w-sm">
                     {/* Image */}
                     <div className="relative h-32 group overflow-hidden">
@@ -282,13 +300,17 @@ export function FeaturesForm() {
                         />
                       ) : (
                         <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                          <span className="text-gray-500 text-sm">No image</span>
+                          <span className="text-gray-500 text-sm">
+                            No image
+                          </span>
                         </div>
                       )}
-                      
+
                       {/* Icon overlay */}
                       <div className="absolute top-2 right-2 bg-white bg-opacity-90 rounded-full w-8 h-8 flex items-center justify-center">
-                        <IconComponent className={`h-4 w-4 text-${feature.color}-600`} />
+                        <IconComponent
+                          className={`h-4 w-4 text-${feature.color}-600`}
+                        />
                       </div>
                     </div>
 
@@ -321,7 +343,7 @@ export function FeaturesForm() {
             <Plus className="h-5 w-5 mr-2" />
             Add New Feature Card
           </Button>
-          
+
           <div className="text-sm text-gray-600 text-center mt-3">
             Recommended: 3-6 features for optimal display
           </div>

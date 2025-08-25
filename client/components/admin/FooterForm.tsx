@@ -1,25 +1,53 @@
 import { useState, useEffect } from "react";
-import { 
-  TextField, 
-  ActionButtons, 
-  FormSection 
-} from "./FormComponents";
+import { TextField, ActionButtons, FormSection } from "./FormComponents";
 import { SectionHeader, SuccessToast } from "./AdminLayout";
-import { getAdminData, saveSection, FooterData } from "@/lib/admin-storage-supabase";
-import { Settings, Plus, Trash2, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import {
+  getAdminData,
+  saveSection,
+  FooterData,
+} from "@/lib/admin-storage-supabase";
+import {
+  Settings,
+  Plus,
+  Trash2,
+  Facebook,
+  Instagram,
+  Twitter,
+  Youtube,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 // Available social platforms with their icons
 const availablePlatforms = [
-  { value: "Facebook", label: "Facebook", icon: Facebook, defaultHover: "hover:text-white" },
-  { value: "Instagram", label: "Instagram", icon: Instagram, defaultHover: "hover:text-pink-400" },
-  { value: "Twitter", label: "Twitter", icon: Twitter, defaultHover: "hover:text-blue-400" },
-  { value: "Youtube", label: "YouTube", icon: Youtube, defaultHover: "hover:text-red-400" }
+  {
+    value: "Facebook",
+    label: "Facebook",
+    icon: Facebook,
+    defaultHover: "hover:text-white",
+  },
+  {
+    value: "Instagram",
+    label: "Instagram",
+    icon: Instagram,
+    defaultHover: "hover:text-pink-400",
+  },
+  {
+    value: "Twitter",
+    label: "Twitter",
+    icon: Twitter,
+    defaultHover: "hover:text-blue-400",
+  },
+  {
+    value: "Youtube",
+    label: "YouTube",
+    icon: Youtube,
+    defaultHover: "hover:text-red-400",
+  },
 ];
 
 export function FooterForm() {
   const [footerData, setFooterData] = useState<FooterData>({
-    socialLinks: []
+    socialLinks: [],
   });
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -36,11 +64,11 @@ export function FooterForm() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await saveSection('footer', footerData);
+      await saveSection("footer", footerData);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
-      console.error('Error saving footer data:', error);
+      console.error("Error saving footer data:", error);
     } finally {
       setIsSaving(false);
     }
@@ -52,35 +80,38 @@ export function FooterForm() {
   };
 
   const addSocialLink = () => {
-    setFooterData(prev => ({
+    setFooterData((prev) => ({
       ...prev,
-      socialLinks: [...prev.socialLinks, {
-        platform: "Facebook",
-        url: "",
-        icon: "Facebook",
-        hoverColor: "hover:text-white"
-      }]
+      socialLinks: [
+        ...prev.socialLinks,
+        {
+          platform: "Facebook",
+          url: "",
+          icon: "Facebook",
+          hoverColor: "hover:text-white",
+        },
+      ],
     }));
   };
 
   const updateSocialLink = (index: number, field: string, value: string) => {
-    setFooterData(prev => ({
+    setFooterData((prev) => ({
       ...prev,
-      socialLinks: prev.socialLinks.map((link, i) => 
-        i === index ? { ...link, [field]: value } : link
-      )
+      socialLinks: prev.socialLinks.map((link, i) =>
+        i === index ? { ...link, [field]: value } : link,
+      ),
     }));
   };
 
   const removeSocialLink = (index: number) => {
-    setFooterData(prev => ({
+    setFooterData((prev) => ({
       ...prev,
-      socialLinks: prev.socialLinks.filter((_, i) => i !== index)
+      socialLinks: prev.socialLinks.filter((_, i) => i !== index),
     }));
   };
 
   const moveSocialLink = (fromIndex: number, toIndex: number) => {
-    setFooterData(prev => {
+    setFooterData((prev) => {
       const newLinks = [...prev.socialLinks];
       const [movedLink] = newLinks.splice(fromIndex, 1);
       newLinks.splice(toIndex, 0, movedLink);
@@ -89,16 +120,18 @@ export function FooterForm() {
   };
 
   const getIconComponent = (iconName: string) => {
-    const platformData = availablePlatforms.find(platform => platform.value === iconName);
+    const platformData = availablePlatforms.find(
+      (platform) => platform.value === iconName,
+    );
     return platformData ? platformData.icon : Facebook;
   };
 
   const handlePlatformChange = (index: number, platform: string) => {
-    const platformData = availablePlatforms.find(p => p.value === platform);
+    const platformData = availablePlatforms.find((p) => p.value === platform);
     if (platformData) {
-      updateSocialLink(index, 'platform', platform);
-      updateSocialLink(index, 'icon', platform);
-      updateSocialLink(index, 'hoverColor', platformData.defaultHover);
+      updateSocialLink(index, "platform", platform);
+      updateSocialLink(index, "icon", platform);
+      updateSocialLink(index, "hoverColor", platformData.defaultHover);
     }
   };
 
@@ -119,7 +152,7 @@ export function FooterForm() {
       <div className="space-y-6">
         {footerData.socialLinks.map((link, index) => {
           const IconComponent = getIconComponent(link.icon);
-          
+
           return (
             <FormSection
               key={index}
@@ -134,11 +167,15 @@ export function FooterForm() {
                       <IconComponent className="h-5 w-5 text-gray-600" />
                     </div>
                     <div>
-                      <div className="font-medium text-gray-900">{link.platform}</div>
-                      <div className="text-sm text-gray-500">Social Link {index + 1}</div>
+                      <div className="font-medium text-gray-900">
+                        {link.platform}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        Social Link {index + 1}
+                      </div>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     {index > 0 && (
                       <Button
@@ -180,7 +217,9 @@ export function FooterForm() {
                       </label>
                       <select
                         value={link.platform}
-                        onChange={(e) => handlePlatformChange(index, e.target.value)}
+                        onChange={(e) =>
+                          handlePlatformChange(index, e.target.value)
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                         required
                       >
@@ -195,7 +234,9 @@ export function FooterForm() {
                     <TextField
                       label="Platform URL"
                       value={link.url}
-                      onChange={(value) => updateSocialLink(index, 'url', value)}
+                      onChange={(value) =>
+                        updateSocialLink(index, "url", value)
+                      }
                       placeholder="https://facebook.com/yourpage"
                       required
                     />
@@ -205,13 +246,17 @@ export function FooterForm() {
                     <TextField
                       label="Hover Color Class"
                       value={link.hoverColor}
-                      onChange={(value) => updateSocialLink(index, 'hoverColor', value)}
+                      onChange={(value) =>
+                        updateSocialLink(index, "hoverColor", value)
+                      }
                       placeholder="hover:text-white"
                       required
                     />
 
                     <div className="p-4 border rounded-lg bg-gray-50">
-                      <div className="text-sm font-medium text-gray-700 mb-3">Preview:</div>
+                      <div className="text-sm font-medium text-gray-700 mb-3">
+                        Preview:
+                      </div>
                       <div className="flex justify-center">
                         <a
                           href={link.url || "#"}
@@ -244,9 +289,10 @@ export function FooterForm() {
             <Plus className="h-5 w-5 mr-2" />
             Add New Social Media Link
           </Button>
-          
+
           <div className="text-sm text-gray-600 text-center mt-3">
-            Common platforms: Facebook, Instagram, Twitter, YouTube, TikTok, LinkedIn
+            Common platforms: Facebook, Instagram, Twitter, YouTube, TikTok,
+            LinkedIn
           </div>
         </FormSection>
       </div>
@@ -275,7 +321,7 @@ export function FooterForm() {
                 );
               })}
             </div>
-            
+
             {footerData.socialLinks.length === 0 && (
               <div className="text-center text-gray-500">
                 No social links configured

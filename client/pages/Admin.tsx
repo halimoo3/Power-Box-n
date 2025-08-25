@@ -11,32 +11,42 @@ import { FooterForm } from "@/components/admin/FooterForm";
 import { PopupsForm } from "@/components/admin/PopupsForm";
 import { SupabaseSetup } from "@/components/admin/SupabaseSetup";
 
-type AdminSection = 'setup' | 'seo' | 'hero' | 'features' | 'trust' | 'gallery' | 'reviews' | 'finalcta' | 'footer' | 'popups';
+type AdminSection =
+  | "setup"
+  | "seo"
+  | "hero"
+  | "features"
+  | "trust"
+  | "gallery"
+  | "reviews"
+  | "finalcta"
+  | "footer"
+  | "popups";
 
 export default function Admin() {
-  const [currentSection, setCurrentSection] = useState<AdminSection>('setup');
+  const [currentSection, setCurrentSection] = useState<AdminSection>("setup");
 
   const renderSection = () => {
     switch (currentSection) {
-      case 'setup':
+      case "setup":
         return <SupabaseSetup />;
-      case 'seo':
+      case "seo":
         return <SeoForm />;
-      case 'hero':
+      case "hero":
         return <HeroForm />;
-      case 'features':
+      case "features":
         return <FeaturesForm />;
-      case 'trust':
+      case "trust":
         return <TrustForm />;
-      case 'gallery':
+      case "gallery":
         return <GalleryForm />;
-      case 'reviews':
+      case "reviews":
         return <ReviewsForm />;
-      case 'finalcta':
+      case "finalcta":
         return <FinalCtaForm />;
-      case 'footer':
+      case "footer":
         return <FooterForm />;
-      case 'popups':
+      case "popups":
         return <PopupsForm />;
       default:
         return <SupabaseSetup />;

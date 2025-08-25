@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
-import { 
-  TextField, 
-  NumberField, 
-  ActionButtons, 
-  FormSection 
+import {
+  TextField,
+  NumberField,
+  ActionButtons,
+  FormSection,
 } from "./FormComponents";
 import { SectionHeader, SuccessToast } from "./AdminLayout";
-import { getAdminData, saveSection, TrustData } from "@/lib/admin-storage-supabase";
+import {
+  getAdminData,
+  saveSection,
+  TrustData,
+} from "@/lib/admin-storage-supabase";
 import { Shield } from "lucide-react";
 
 export function TrustForm() {
@@ -19,7 +23,7 @@ export function TrustForm() {
     returnsTitle: "",
     returnsDays: 0,
     returnsText: "",
-    ctaButtonText: ""
+    ctaButtonText: "",
   });
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -36,11 +40,11 @@ export function TrustForm() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await saveSection('trust', trustData);
+      await saveSection("trust", trustData);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
-      console.error('Error saving trust data:', error);
+      console.error("Error saving trust data:", error);
     } finally {
       setIsSaving(false);
     }
@@ -52,7 +56,7 @@ export function TrustForm() {
   };
 
   const updateField = (field: keyof TrustData, value: string | number) => {
-    setTrustData(prev => ({ ...prev, [field]: value }));
+    setTrustData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -77,7 +81,7 @@ export function TrustForm() {
           <TextField
             label="Walmart Title"
             value={trustData.walmartTitle}
-            onChange={(value) => updateField('walmartTitle', value)}
+            onChange={(value) => updateField("walmartTitle", value)}
             placeholder="Official Walmart Seller"
             required
           />
@@ -85,7 +89,7 @@ export function TrustForm() {
           <TextField
             label="Walmart Subtext"
             value={trustData.walmartSubtext}
-            onChange={(value) => updateField('walmartSubtext', value)}
+            onChange={(value) => updateField("walmartSubtext", value)}
             placeholder="Secure checkout and fast delivery"
             required
           />
@@ -101,7 +105,7 @@ export function TrustForm() {
           <TextField
             label="Seller Title"
             value={trustData.sellerTitle}
-            onChange={(value) => updateField('sellerTitle', value)}
+            onChange={(value) => updateField("sellerTitle", value)}
             placeholder="Pro Seller"
             required
           />
@@ -110,7 +114,7 @@ export function TrustForm() {
             <NumberField
               label="Seller Rating"
               value={trustData.sellerRating}
-              onChange={(value) => updateField('sellerRating', value)}
+              onChange={(value) => updateField("sellerRating", value)}
               min={0}
               max={5}
               step={0.1}
@@ -121,7 +125,7 @@ export function TrustForm() {
             <NumberField
               label="Seller Review Count"
               value={trustData.sellerReviewCount}
-              onChange={(value) => updateField('sellerReviewCount', value)}
+              onChange={(value) => updateField("sellerReviewCount", value)}
               min={0}
               placeholder="570"
               required
@@ -139,7 +143,7 @@ export function TrustForm() {
           <TextField
             label="Returns Policy Title"
             value={trustData.returnsTitle}
-            onChange={(value) => updateField('returnsTitle', value)}
+            onChange={(value) => updateField("returnsTitle", value)}
             placeholder="Free 90-Day Returns"
             required
           />
@@ -147,7 +151,7 @@ export function TrustForm() {
           <NumberField
             label="Returns Period (Days)"
             value={trustData.returnsDays}
-            onChange={(value) => updateField('returnsDays', value)}
+            onChange={(value) => updateField("returnsDays", value)}
             min={0}
             placeholder="90"
             required
@@ -156,7 +160,7 @@ export function TrustForm() {
           <TextField
             label="Returns Description"
             value={trustData.returnsText}
-            onChange={(value) => updateField('returnsText', value)}
+            onChange={(value) => updateField("returnsText", value)}
             placeholder="Shop with confidence - easy returns"
             required
           />
@@ -172,7 +176,7 @@ export function TrustForm() {
           <TextField
             label="CTA Button Text"
             value={trustData.ctaButtonText}
-            onChange={(value) => updateField('ctaButtonText', value)}
+            onChange={(value) => updateField("ctaButtonText", value)}
             placeholder="View Product Details"
             required
           />
@@ -189,9 +193,7 @@ export function TrustForm() {
             {/* Walmart Logo & Trust */}
             <div className="text-center">
               <div className="bg-white rounded-xl p-4 mb-4 inline-block">
-                <div className="text-blue-600 font-bold text-2xl">
-                  Walmart
-                </div>
+                <div className="text-blue-600 font-bold text-2xl">Walmart</div>
               </div>
               <h3 className="text-xl font-bold mb-2">
                 {trustData.walmartTitle || "Walmart Title"}
@@ -210,13 +212,19 @@ export function TrustForm() {
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <div className="flex">
                     {[...Array(4)].map((_, i) => (
-                      <span key={i} className="text-yellow-400 text-lg">★</span>
+                      <span key={i} className="text-yellow-400 text-lg">
+                        ★
+                      </span>
                     ))}
                     <span className="text-yellow-400 text-lg">☆</span>
                   </div>
-                  <span className="font-semibold">{trustData.sellerRating}</span>
+                  <span className="font-semibold">
+                    {trustData.sellerRating}
+                  </span>
                 </div>
-                <p className="text-blue-100">from {trustData.sellerReviewCount} reviews</p>
+                <p className="text-blue-100">
+                  from {trustData.sellerReviewCount} reviews
+                </p>
               </div>
             </div>
 
@@ -226,7 +234,8 @@ export function TrustForm() {
                 <Shield className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-xl font-bold mb-2">
-                {trustData.returnsTitle || `Free ${trustData.returnsDays}-Day Returns`}
+                {trustData.returnsTitle ||
+                  `Free ${trustData.returnsDays}-Day Returns`}
               </h3>
               <p className="text-blue-100">
                 {trustData.returnsText || "Returns description"}

@@ -1,15 +1,28 @@
 import { useState, useEffect } from "react";
-import { 
-  TextField, 
+import {
+  TextField,
   TextAreaField,
   IconSelect,
   ColorSelect,
-  ActionButtons, 
-  FormSection 
+  ActionButtons,
+  FormSection,
 } from "./FormComponents";
 import { SectionHeader, SuccessToast } from "./AdminLayout";
-import { getAdminData, saveSection, FinalCtaData } from "@/lib/admin-storage-supabase";
-import { Megaphone, Plus, Trash2, Shield, Truck, BadgeCheck, Star, Check } from "lucide-react";
+import {
+  getAdminData,
+  saveSection,
+  FinalCtaData,
+} from "@/lib/admin-storage-supabase";
+import {
+  Megaphone,
+  Plus,
+  Trash2,
+  Shield,
+  Truck,
+  BadgeCheck,
+  Star,
+  Check,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 // Available icons for trust bar items
@@ -18,7 +31,7 @@ const availableIcons = [
   { value: "Truck", label: "Truck", icon: Truck },
   { value: "BadgeCheck", label: "Badge Check", icon: BadgeCheck },
   { value: "Star", label: "Star", icon: Star },
-  { value: "Check", label: "Check", icon: Check }
+  { value: "Check", label: "Check", icon: Check },
 ];
 
 // Available colors for trust bar items
@@ -28,7 +41,7 @@ const availableColors = [
   { value: "purple", label: "Purple", className: "bg-purple-500" },
   { value: "orange", label: "Orange", className: "bg-orange-500" },
   { value: "red", label: "Red", className: "bg-red-500" },
-  { value: "indigo", label: "Indigo", className: "bg-indigo-500" }
+  { value: "indigo", label: "Indigo", className: "bg-indigo-500" },
 ];
 
 export function FinalCtaForm() {
@@ -39,7 +52,7 @@ export function FinalCtaForm() {
     description: "",
     benefits: [],
     ctaButtonText: "",
-    trustBarItems: []
+    trustBarItems: [],
   });
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -56,11 +69,11 @@ export function FinalCtaForm() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await saveSection('finalCta', finalCtaData);
+      await saveSection("finalCta", finalCtaData);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
-      console.error('Error saving final CTA data:', error);
+      console.error("Error saving final CTA data:", error);
     } finally {
       setIsSaving(false);
     }
@@ -71,58 +84,66 @@ export function FinalCtaForm() {
     setFinalCtaData(adminData.finalCta);
   };
 
-  const updateField = (field: keyof Omit<FinalCtaData, 'benefits' | 'trustBarItems'>, value: string) => {
-    setFinalCtaData(prev => ({ ...prev, [field]: value }));
+  const updateField = (
+    field: keyof Omit<FinalCtaData, "benefits" | "trustBarItems">,
+    value: string,
+  ) => {
+    setFinalCtaData((prev) => ({ ...prev, [field]: value }));
   };
 
   // Benefits management
   const addBenefit = () => {
-    setFinalCtaData(prev => ({
+    setFinalCtaData((prev) => ({
       ...prev,
-      benefits: [...prev.benefits, "New benefit"]
+      benefits: [...prev.benefits, "New benefit"],
     }));
   };
 
   const updateBenefit = (index: number, value: string) => {
-    setFinalCtaData(prev => ({
+    setFinalCtaData((prev) => ({
       ...prev,
-      benefits: prev.benefits.map((benefit, i) => i === index ? value : benefit)
+      benefits: prev.benefits.map((benefit, i) =>
+        i === index ? value : benefit,
+      ),
     }));
   };
 
   const removeBenefit = (index: number) => {
-    setFinalCtaData(prev => ({
+    setFinalCtaData((prev) => ({
       ...prev,
-      benefits: prev.benefits.filter((_, i) => i !== index)
+      benefits: prev.benefits.filter((_, i) => i !== index),
     }));
   };
 
   // Trust bar items management
   const addTrustBarItem = () => {
-    setFinalCtaData(prev => ({
+    setFinalCtaData((prev) => ({
       ...prev,
-      trustBarItems: [...prev.trustBarItems, { icon: "Shield", text: "New trust item", color: "green" }]
+      trustBarItems: [
+        ...prev.trustBarItems,
+        { icon: "Shield", text: "New trust item", color: "green" },
+      ],
     }));
   };
 
   const updateTrustBarItem = (index: number, field: string, value: string) => {
-    setFinalCtaData(prev => ({
+    setFinalCtaData((prev) => ({
       ...prev,
-      trustBarItems: prev.trustBarItems.map((item, i) => 
-        i === index ? { ...item, [field]: value } : item
-      )
+      trustBarItems: prev.trustBarItems.map((item, i) =>
+        i === index ? { ...item, [field]: value } : item,
+      ),
     }));
   };
 
   const removeTrustBarItem = (index: number) => {
-    setFinalCtaData(prev => ({
+    setFinalCtaData((prev) => ({
       ...prev,
-      trustBarItems: prev.trustBarItems.filter((_, i) => i !== index)
+      trustBarItems: prev.trustBarItems.filter((_, i) => i !== index),
     }));
   };
 
   const getIconComponent = (iconName: string) => {
-    const iconData = availableIcons.find(icon => icon.value === iconName);
+    const iconData = availableIcons.find((icon) => icon.value === iconName);
     return iconData ? iconData.icon : Shield;
   };
 
@@ -149,7 +170,7 @@ export function FinalCtaForm() {
             <TextField
               label="Badge Icon (Emoji)"
               value={finalCtaData.badgeIcon}
-              onChange={(value) => updateField('badgeIcon', value)}
+              onChange={(value) => updateField("badgeIcon", value)}
               placeholder="🔥"
               required
             />
@@ -157,7 +178,7 @@ export function FinalCtaForm() {
             <TextField
               label="Badge Text"
               value={finalCtaData.badgeText}
-              onChange={(value) => updateField('badgeText', value)}
+              onChange={(value) => updateField("badgeText", value)}
               placeholder="Bestseller - Limited Time Offer"
               required
             />
@@ -166,7 +187,7 @@ export function FinalCtaForm() {
           <TextField
             label="Main Title"
             value={finalCtaData.mainTitle}
-            onChange={(value) => updateField('mainTitle', value)}
+            onChange={(value) => updateField("mainTitle", value)}
             placeholder="Ready to Fuel Your Day?"
             required
           />
@@ -174,7 +195,7 @@ export function FinalCtaForm() {
           <TextAreaField
             label="Description"
             value={finalCtaData.description}
-            onChange={(value) => updateField('description', value)}
+            onChange={(value) => updateField("description", value)}
             placeholder="Get your 42-count nutritious snack box today!"
             rows={2}
             required
@@ -229,7 +250,7 @@ export function FinalCtaForm() {
         <TextField
           label="CTA Button Text"
           value={finalCtaData.ctaButtonText}
-          onChange={(value) => updateField('ctaButtonText', value)}
+          onChange={(value) => updateField("ctaButtonText", value)}
           placeholder="Get Your Snack Box Now"
           required
         />
@@ -243,20 +264,26 @@ export function FinalCtaForm() {
         <div className="space-y-6">
           {finalCtaData.trustBarItems.map((item, index) => {
             const IconComponent = getIconComponent(item.icon);
-            
+
             return (
               <div key={index} className="border rounded-lg p-4">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className={`p-2 rounded-lg bg-${item.color}-100`}>
-                      <IconComponent className={`h-5 w-5 text-${item.color}-600`} />
+                      <IconComponent
+                        className={`h-5 w-5 text-${item.color}-600`}
+                      />
                     </div>
                     <div>
-                      <div className="font-medium text-gray-900">{item.text}</div>
-                      <div className="text-sm text-gray-500">Trust Item {index + 1}</div>
+                      <div className="font-medium text-gray-900">
+                        {item.text}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        Trust Item {index + 1}
+                      </div>
                     </div>
                   </div>
-                  
+
                   <Button
                     variant="outline"
                     size="sm"
@@ -271,7 +298,9 @@ export function FinalCtaForm() {
                   <TextField
                     label="Trust Item Text"
                     value={item.text}
-                    onChange={(value) => updateTrustBarItem(index, 'text', value)}
+                    onChange={(value) =>
+                      updateTrustBarItem(index, "text", value)
+                    }
                     placeholder="Secure Payment"
                     required
                   />
@@ -279,14 +308,18 @@ export function FinalCtaForm() {
                   <IconSelect
                     label="Icon"
                     value={item.icon}
-                    onChange={(value) => updateTrustBarItem(index, 'icon', value)}
+                    onChange={(value) =>
+                      updateTrustBarItem(index, "icon", value)
+                    }
                     options={availableIcons}
                   />
 
                   <ColorSelect
                     label="Color"
                     value={item.color}
-                    onChange={(value) => updateTrustBarItem(index, 'color', value)}
+                    onChange={(value) =>
+                      updateTrustBarItem(index, "color", value)
+                    }
                     options={availableColors}
                   />
                 </div>
@@ -335,9 +368,7 @@ export function FinalCtaForm() {
                   <div className="bg-green-100 rounded-full p-1 flex-shrink-0">
                     <Check className="h-4 w-4 text-green-600" />
                   </div>
-                  <span className="text-gray-700 font-medium">
-                    {benefit}
-                  </span>
+                  <span className="text-gray-700 font-medium">{benefit}</span>
                 </div>
               ))}
             </div>

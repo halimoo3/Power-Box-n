@@ -1,19 +1,23 @@
 import { useState, useEffect } from "react";
-import { 
-  TextField, 
-  ImageUpload, 
-  ActionButtons, 
-  FormSection 
+import {
+  TextField,
+  ImageUpload,
+  ActionButtons,
+  FormSection,
 } from "./FormComponents";
 import { SectionHeader, SuccessToast } from "./AdminLayout";
-import { getAdminData, saveSection, GalleryData } from "@/lib/admin-storage-supabase";
+import {
+  getAdminData,
+  saveSection,
+  GalleryData,
+} from "@/lib/admin-storage-supabase";
 import { Settings, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function GalleryForm() {
   const [galleryData, setGalleryData] = useState<GalleryData>({
     title: "",
-    images: []
+    images: [],
   });
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -30,11 +34,11 @@ export function GalleryForm() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await saveSection('gallery', galleryData);
+      await saveSection("gallery", galleryData);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
-      console.error('Error saving gallery data:', error);
+      console.error("Error saving gallery data:", error);
     } finally {
       setIsSaving(false);
     }
@@ -46,34 +50,34 @@ export function GalleryForm() {
   };
 
   const updateTitle = (title: string) => {
-    setGalleryData(prev => ({ ...prev, title }));
+    setGalleryData((prev) => ({ ...prev, title }));
   };
 
   const addImage = () => {
-    setGalleryData(prev => ({
+    setGalleryData((prev) => ({
       ...prev,
-      images: [...prev.images, { url: "", title: "", description: "" }]
+      images: [...prev.images, { url: "", title: "", description: "" }],
     }));
   };
 
   const updateImage = (index: number, field: string, value: string) => {
-    setGalleryData(prev => ({
+    setGalleryData((prev) => ({
       ...prev,
-      images: prev.images.map((img, i) => 
-        i === index ? { ...img, [field]: value } : img
-      )
+      images: prev.images.map((img, i) =>
+        i === index ? { ...img, [field]: value } : img,
+      ),
     }));
   };
 
   const removeImage = (index: number) => {
-    setGalleryData(prev => ({
+    setGalleryData((prev) => ({
       ...prev,
-      images: prev.images.filter((_, i) => i !== index)
+      images: prev.images.filter((_, i) => i !== index),
     }));
   };
 
   const moveImage = (fromIndex: number, toIndex: number) => {
-    setGalleryData(prev => {
+    setGalleryData((prev) => {
       const newImages = [...prev.images];
       const [movedImage] = newImages.splice(fromIndex, 1);
       newImages.splice(toIndex, 0, movedImage);
@@ -127,10 +131,12 @@ export function GalleryForm() {
                     <div className="font-medium text-gray-900">
                       {image.title || `Gallery Image ${index + 1}`}
                     </div>
-                    <div className="text-sm text-gray-500">Position {index + 1}</div>
+                    <div className="text-sm text-gray-500">
+                      Position {index + 1}
+                    </div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   {index > 0 && (
                     <Button
@@ -169,15 +175,17 @@ export function GalleryForm() {
                   <TextField
                     label="Image Title"
                     value={image.title}
-                    onChange={(value) => updateImage(index, 'title', value)}
+                    onChange={(value) => updateImage(index, "title", value)}
                     placeholder="Complete Collection"
                     required
                   />
 
                   <TextField
-                    label="Image Description" 
+                    label="Image Description"
                     value={image.description}
-                    onChange={(value) => updateImage(index, 'description', value)}
+                    onChange={(value) =>
+                      updateImage(index, "description", value)
+                    }
                     placeholder="Full view of all 42 snacks"
                     required
                   />
@@ -187,7 +195,7 @@ export function GalleryForm() {
                   <ImageUpload
                     label="Gallery Image"
                     value={image.url}
-                    onChange={(value) => updateImage(index, 'url', value)}
+                    onChange={(value) => updateImage(index, "url", value)}
                     placeholder="Upload gallery image"
                     required
                   />
@@ -197,7 +205,9 @@ export function GalleryForm() {
               {/* Image Preview */}
               {image.url && (
                 <div className="mt-6 p-4 border rounded-lg bg-gray-50">
-                  <div className="text-sm font-medium text-gray-700 mb-3">Preview:</div>
+                  <div className="text-sm font-medium text-gray-700 mb-3">
+                    Preview:
+                  </div>
                   <div className="group relative overflow-hidden rounded-2xl shadow-xl cursor-pointer max-w-sm">
                     <img
                       src={image.url}
@@ -231,7 +241,7 @@ export function GalleryForm() {
             <Plus className="h-5 w-5 mr-2" />
             Add New Gallery Image
           </Button>
-          
+
           <div className="text-sm text-gray-600 text-center mt-3">
             Recommended: 3-6 images for optimal display
           </div>
@@ -250,7 +260,10 @@ export function GalleryForm() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {galleryData.images.slice(0, 3).map((image, index) => (
-              <div key={index} className="group relative overflow-hidden rounded-2xl shadow-xl">
+              <div
+                key={index}
+                className="group relative overflow-hidden rounded-2xl shadow-xl"
+              >
                 {image.url ? (
                   <img
                     src={image.url}

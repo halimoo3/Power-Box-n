@@ -1,13 +1,17 @@
 import { useState, useEffect } from "react";
-import { 
-  TextField, 
-  NumberField, 
+import {
+  TextField,
+  NumberField,
   ImageUpload,
-  ActionButtons, 
-  FormSection 
+  ActionButtons,
+  FormSection,
 } from "./FormComponents";
 import { SectionHeader, SuccessToast } from "./AdminLayout";
-import { getAdminData, saveSection, HeroData } from "@/lib/admin-storage-supabase";
+import {
+  getAdminData,
+  saveSection,
+  HeroData,
+} from "@/lib/admin-storage-supabase";
 import { Home, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -25,7 +29,7 @@ export function HeroForm() {
     primaryButtonText: "",
     secondaryButtonText: "",
     specialOfferButtonText: "",
-    productImages: []
+    productImages: [],
   });
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -42,11 +46,11 @@ export function HeroForm() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await saveSection('hero', heroData);
+      await saveSection("hero", heroData);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
-      console.error('Error saving hero data:', error);
+      console.error("Error saving hero data:", error);
     } finally {
       setIsSaving(false);
     }
@@ -57,23 +61,26 @@ export function HeroForm() {
     setHeroData(adminData.hero);
   };
 
-  const updateField = <K extends keyof HeroData>(field: K, value: HeroData[K]) => {
-    setHeroData(prev => ({ ...prev, [field]: value }));
+  const updateField = <K extends keyof HeroData>(
+    field: K,
+    value: HeroData[K],
+  ) => {
+    setHeroData((prev) => ({ ...prev, [field]: value }));
   };
 
   const addProductImage = () => {
-    updateField('productImages', [...heroData.productImages, ""]);
+    updateField("productImages", [...heroData.productImages, ""]);
   };
 
   const updateProductImage = (index: number, url: string) => {
     const newImages = [...heroData.productImages];
     newImages[index] = url;
-    updateField('productImages', newImages);
+    updateField("productImages", newImages);
   };
 
   const removeProductImage = (index: number) => {
     const newImages = heroData.productImages.filter((_, i) => i !== index);
-    updateField('productImages', newImages);
+    updateField("productImages", newImages);
   };
 
   return (
@@ -98,7 +105,7 @@ export function HeroForm() {
           <TextField
             label="Hero Title"
             value={heroData.title}
-            onChange={(value) => updateField('title', value)}
+            onChange={(value) => updateField("title", value)}
             placeholder="Enter the main product title"
             required
           />
@@ -107,7 +114,7 @@ export function HeroForm() {
             <NumberField
               label="Product Rating"
               value={heroData.rating}
-              onChange={(value) => updateField('rating', value)}
+              onChange={(value) => updateField("rating", value)}
               min={0}
               max={5}
               step={0.1}
@@ -118,7 +125,7 @@ export function HeroForm() {
             <NumberField
               label="Review Count"
               value={heroData.reviewCount}
-              onChange={(value) => updateField('reviewCount', value)}
+              onChange={(value) => updateField("reviewCount", value)}
               min={0}
               placeholder="23"
               required
@@ -129,7 +136,7 @@ export function HeroForm() {
             <NumberField
               label="Sale Price ($)"
               value={heroData.salePrice}
-              onChange={(value) => updateField('salePrice', value)}
+              onChange={(value) => updateField("salePrice", value)}
               min={0}
               step={0.01}
               placeholder="31.95"
@@ -139,7 +146,7 @@ export function HeroForm() {
             <NumberField
               label="Original Price ($)"
               value={heroData.originalPrice}
-              onChange={(value) => updateField('originalPrice', value)}
+              onChange={(value) => updateField("originalPrice", value)}
               min={0}
               step={0.01}
               placeholder="43.19"
@@ -151,7 +158,7 @@ export function HeroForm() {
             <TextField
               label="Subscribe & Save Text"
               value={heroData.subscribeText}
-              onChange={(value) => updateField('subscribeText', value)}
+              onChange={(value) => updateField("subscribeText", value)}
               placeholder="✓ Subscribe & Save available"
               required
             />
@@ -159,7 +166,7 @@ export function HeroForm() {
             <TextField
               label="Walmart+ Text"
               value={heroData.walmartText}
-              onChange={(value) => updateField('walmartText', value)}
+              onChange={(value) => updateField("walmartText", value)}
               placeholder="✓ Walmart+ offer eligible"
               required
             />
@@ -176,7 +183,7 @@ export function HeroForm() {
           <TextField
             label="Delivery Date"
             value={heroData.deliveryDate}
-            onChange={(value) => updateField('deliveryDate', value)}
+            onChange={(value) => updateField("deliveryDate", value)}
             placeholder="Thu, Aug 21"
             required
           />
@@ -184,7 +191,7 @@ export function HeroForm() {
           <TextField
             label="Stock/Urgency Text"
             value={heroData.stockText}
-            onChange={(value) => updateField('stockText', value)}
+            onChange={(value) => updateField("stockText", value)}
             placeholder="⚡ Limited stock available"
             required
           />
@@ -200,7 +207,7 @@ export function HeroForm() {
           <TextField
             label="Primary Button Text"
             value={heroData.primaryButtonText}
-            onChange={(value) => updateField('primaryButtonText', value)}
+            onChange={(value) => updateField("primaryButtonText", value)}
             placeholder="View Product Details"
             required
           />
@@ -208,7 +215,7 @@ export function HeroForm() {
           <TextField
             label="Secondary Button Text"
             value={heroData.secondaryButtonText}
-            onChange={(value) => updateField('secondaryButtonText', value)}
+            onChange={(value) => updateField("secondaryButtonText", value)}
             placeholder="Learn More About This Product"
             required
           />
@@ -216,7 +223,7 @@ export function HeroForm() {
           <TextField
             label="Special Offer Button Text"
             value={heroData.specialOfferButtonText}
-            onChange={(value) => updateField('specialOfferButtonText', value)}
+            onChange={(value) => updateField("specialOfferButtonText", value)}
             placeholder="🎁 Special Offer Available"
             required
           />
@@ -271,8 +278,9 @@ export function HeroForm() {
           </Button>
 
           <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
-            <strong>Tip:</strong> The first image will be used as the primary hero image. 
-            Additional images will be available in the product gallery and modal.
+            <strong>Tip:</strong> The first image will be used as the primary
+            hero image. Additional images will be available in the product
+            gallery and modal.
           </div>
         </div>
       </FormSection>
@@ -287,7 +295,7 @@ export function HeroForm() {
             <h1 className="text-2xl font-bold text-gray-900 leading-tight">
               {heroData.title || "Hero Title"}
             </h1>
-            
+
             <div className="flex items-center gap-3">
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
@@ -316,14 +324,18 @@ export function HeroForm() {
                   ${heroData.originalPrice.toFixed(2)}
                 </div>
               )}
-              <div className="text-sm text-green-600">{heroData.subscribeText}</div>
-              <div className="text-sm text-blue-600">{heroData.walmartText}</div>
+              <div className="text-sm text-green-600">
+                {heroData.subscribeText}
+              </div>
+              <div className="text-sm text-blue-600">
+                {heroData.walmartText}
+              </div>
             </div>
 
             <div className="text-green-800 font-semibold">
               Arrives by {heroData.deliveryDate || "Date"}
             </div>
-            
+
             <div className="text-red-600 font-medium">
               {heroData.stockText || "Stock text"}
             </div>

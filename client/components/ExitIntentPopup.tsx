@@ -36,7 +36,7 @@ export function ExitIntentPopup({
       onSubscribe(email);
     } else if (buttonLink) {
       // If no email validation needed, just redirect to the link
-      window.open(buttonLink, '_blank');
+      window.open(buttonLink, "_blank");
       onClose();
     }
   };

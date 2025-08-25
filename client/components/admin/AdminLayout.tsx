@@ -10,7 +10,7 @@ import {
   LogOut,
   Save,
   Eye,
-  Shield
+  Shield,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -27,68 +27,68 @@ const sidebarItems = [
     id: "setup",
     label: "Supabase Setup",
     icon: Settings,
-    description: "Database and storage configuration"
+    description: "Database and storage configuration",
   },
   {
     id: "seo",
     label: "SEO Settings",
     icon: Search,
-    description: "Meta tags and SEO configuration"
+    description: "Meta tags and SEO configuration",
   },
   {
     id: "hero",
     label: "Hero Section",
     icon: Home,
-    description: "Main title, pricing, and buttons"
+    description: "Main title, pricing, and buttons",
   },
   {
     id: "features",
     label: "Features Section",
     icon: Star,
-    description: "Feature cards with images and text"
+    description: "Feature cards with images and text",
   },
   {
     id: "trust",
     label: "Trust Section",
     icon: Shield,
-    description: "Walmart seller info and returns policy"
+    description: "Walmart seller info and returns policy",
   },
   {
     id: "gallery",
     label: "Gallery Section",
     icon: Settings,
-    description: "Product gallery images"
+    description: "Product gallery images",
   },
   {
     id: "reviews",
     label: "Customer Reviews",
     icon: Star,
-    description: "Customer testimonials and ratings"
+    description: "Customer testimonials and ratings",
   },
   {
     id: "finalcta",
     label: "Final CTA Section",
     icon: Megaphone,
-    description: "Final call-to-action with benefits"
+    description: "Final call-to-action with benefits",
   },
   {
     id: "footer",
     label: "Footer",
     icon: Settings,
-    description: "Social media links and footer content"
+    description: "Social media links and footer content",
   },
   {
     id: "popups",
     label: "Popups",
     icon: Megaphone,
-    description: "Button-triggered and exit-intent popups"
-  }
+    description: "Button-triggered and exit-intent popups",
+  },
 ];
 
 export function AdminLayout({
   children,
   currentSection,
-  onSectionChange
+  onSectionChange,
 }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string>("");
@@ -103,29 +103,31 @@ export function AdminLayout({
 
   const handlePreviewSite = () => {
     // Open the main site in a new tab
-    window.open('/', '_blank');
+    window.open("/", "_blank");
   };
 
   const handleExitAdmin = () => {
     // Navigate back to main site
-    window.location.href = '/';
+    window.location.href = "/";
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
-      <div className={cn(
-        "fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0",
-        sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
+      <div
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0",
+          sidebarOpen ? "translate-x-0" : "-translate-x-full",
+        )}
+      >
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
@@ -133,9 +135,7 @@ export function AdminLayout({
               <h1 className="text-lg font-semibold text-gray-900">
                 Admin Dashboard
               </h1>
-              <p className="text-sm text-gray-600">
-                Snack Box Site Editor
-              </p>
+              <p className="text-sm text-gray-600">Snack Box Site Editor</p>
             </div>
             <Button
               variant="ghost"
@@ -152,7 +152,7 @@ export function AdminLayout({
             {sidebarItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentSection === item.id;
-              
+
               return (
                 <button
                   key={item.id}
@@ -164,17 +164,17 @@ export function AdminLayout({
                     "w-full flex items-start gap-3 p-3 rounded-lg text-left transition-colors",
                     isActive
                       ? "bg-blue-50 text-blue-700 border border-blue-200"
-                      : "text-gray-700 hover:bg-gray-50"
+                      : "text-gray-700 hover:bg-gray-50",
                   )}
                 >
-                  <Icon className={cn(
-                    "h-5 w-5 mt-0.5 flex-shrink-0",
-                    isActive ? "text-blue-600" : "text-gray-500"
-                  )} />
+                  <Icon
+                    className={cn(
+                      "h-5 w-5 mt-0.5 flex-shrink-0",
+                      isActive ? "text-blue-600" : "text-gray-500",
+                    )}
+                  />
                   <div>
-                    <div className="font-medium text-sm">
-                      {item.label}
-                    </div>
+                    <div className="font-medium text-sm">{item.label}</div>
                     <div className="text-xs text-gray-500 mt-0.5">
                       {item.description}
                     </div>
@@ -204,10 +204,13 @@ export function AdminLayout({
               <LogOut className="h-4 w-4 mr-2" />
               Exit Admin
             </Button>
-            
+
             {/* Last Updated */}
             <div className="text-xs text-gray-500 pt-2 border-t">
-              Last updated: {lastUpdated ? new Date(lastUpdated).toLocaleString() : 'Loading...'}
+              Last updated:{" "}
+              {lastUpdated
+                ? new Date(lastUpdated).toLocaleString()
+                : "Loading..."}
             </div>
           </div>
         </div>
@@ -228,11 +231,7 @@ export function AdminLayout({
             <h1 className="text-lg font-semibold text-gray-900">
               Admin Dashboard
             </h1>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handlePreviewSite}
-            >
+            <Button variant="ghost" size="sm" onClick={handlePreviewSite}>
               <Eye className="h-5 w-5" />
             </Button>
           </div>
@@ -240,9 +239,7 @@ export function AdminLayout({
 
         {/* Content Area */}
         <main className="flex-1 p-4 lg:p-8 overflow-auto">
-          <div className="max-w-4xl mx-auto">
-            {children}
-          </div>
+          <div className="max-w-4xl mx-auto">{children}</div>
         </main>
       </div>
     </div>
@@ -256,23 +253,19 @@ interface SectionHeaderProps {
   actions?: React.ReactNode;
 }
 
-export function SectionHeader({ title, description, actions }: SectionHeaderProps) {
+export function SectionHeader({
+  title,
+  description,
+  actions,
+}: SectionHeaderProps) {
   return (
     <div className="mb-8">
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            {title}
-          </h2>
-          <p className="text-gray-600">
-            {description}
-          </p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">{title}</h2>
+          <p className="text-gray-600">{description}</p>
         </div>
-        {actions && (
-          <div className="ml-4">
-            {actions}
-          </div>
-        )}
+        {actions && <div className="ml-4">{actions}</div>}
       </div>
     </div>
   );

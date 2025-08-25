@@ -1,8 +1,21 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckCircle, AlertCircle, ExternalLink, Copy, Database, ImageIcon } from "lucide-react";
+import {
+  CheckCircle,
+  AlertCircle,
+  ExternalLink,
+  Copy,
+  Database,
+  ImageIcon,
+} from "lucide-react";
 import { initializeSupabaseSetup } from "@/lib/supabase-admin";
 
 export function SupabaseSetup() {
@@ -14,7 +27,7 @@ export function SupabaseSetup() {
   }>({
     database: false,
     storage: false,
-    testing: false
+    testing: false,
   });
   const [isSetupRunning, setIsSetupRunning] = useState(false);
   const [setupMessage, setSetupMessage] = useState("");
@@ -44,15 +57,15 @@ CREATE POLICY "Enable all for users" ON admin_content
   const handleRunSetup = async () => {
     setIsSetupRunning(true);
     setSetupMessage("");
-    
+
     try {
       const success = await initializeSupabaseSetup();
-      
+
       if (success) {
         setSetupStatus({
           database: true,
           storage: true,
-          testing: true
+          testing: true,
         });
         setSetupMessage("✅ Supabase setup completed successfully!");
       } else {
@@ -60,18 +73,22 @@ CREATE POLICY "Enable all for users" ON admin_content
           database: false,
           storage: false,
           testing: false,
-          error: "Setup failed - please check the manual setup instructions"
+          error: "Setup failed - please check the manual setup instructions",
         });
-        setSetupMessage("❌ Setup failed. Please follow the manual setup instructions below.");
+        setSetupMessage(
+          "❌ Setup failed. Please follow the manual setup instructions below.",
+        );
       }
     } catch (error) {
       setSetupStatus({
         database: false,
         storage: false,
         testing: false,
-        error: error instanceof Error ? error.message : "Unknown error"
+        error: error instanceof Error ? error.message : "Unknown error",
       });
-      setSetupMessage("❌ Setup error. Please follow the manual setup instructions below.");
+      setSetupMessage(
+        "❌ Setup error. Please follow the manual setup instructions below.",
+      );
     } finally {
       setIsSetupRunning(false);
     }
@@ -88,7 +105,8 @@ CREATE POLICY "Enable all for users" ON admin_content
           Supabase Integration Setup
         </h2>
         <p className="text-gray-600">
-          Complete the Supabase setup to enable database storage and image uploads
+          Complete the Supabase setup to enable database storage and image
+          uploads
         </p>
       </div>
 
@@ -100,20 +118,27 @@ CREATE POLICY "Enable all for users" ON admin_content
             Automatic Setup
           </CardTitle>
           <CardDescription>
-            Try automatic setup first - this will create the database table and storage bucket
+            Try automatic setup first - this will create the database table and
+            storage bucket
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button 
+          <Button
             onClick={handleRunSetup}
             disabled={isSetupRunning}
             className="w-full"
           >
             {isSetupRunning ? "Setting up..." : "Run Automatic Setup"}
           </Button>
-          
+
           {setupMessage && (
-            <Alert className={setupStatus.database && setupStatus.storage ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
+            <Alert
+              className={
+                setupStatus.database && setupStatus.storage
+                  ? "border-green-200 bg-green-50"
+                  : "border-red-200 bg-red-50"
+              }
+            >
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>Setup Status</AlertTitle>
               <AlertDescription>{setupMessage}</AlertDescription>
@@ -121,7 +146,9 @@ CREATE POLICY "Enable all for users" ON admin_content
           )}
 
           {/* Status indicators */}
-          {(setupStatus.database || setupStatus.storage || setupStatus.testing) && (
+          {(setupStatus.database ||
+            setupStatus.storage ||
+            setupStatus.testing) && (
             <div className="space-y-2 pt-4 border-t">
               <div className="flex items-center gap-2">
                 {setupStatus.database ? (
@@ -131,7 +158,7 @@ CREATE POLICY "Enable all for users" ON admin_content
                 )}
                 <span className="text-sm">Database table</span>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 {setupStatus.storage ? (
                   <CheckCircle className="h-4 w-4 text-green-600" />
@@ -177,7 +204,17 @@ CREATE POLICY "Enable all for users" ON admin_content
               </pre>
             </div>
             <div className="mt-3 space-y-2 text-sm text-gray-600">
-              <p>• Go to your <a href="https://ukyybenrsaeapesvvprd.supabase.co/editor" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Supabase SQL Editor</a></p>
+              <p>
+                • Go to your{" "}
+                <a
+                  href="https://ukyybenrsaeapesvvprd.supabase.co/editor"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  Supabase SQL Editor
+                </a>
+              </p>
               <p>• Copy and paste the SQL script above</p>
               <p>• Click "Run" to execute</p>
             </div>
@@ -191,12 +228,31 @@ CREATE POLICY "Enable all for users" ON admin_content
             </h3>
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <div className="space-y-2 text-sm">
-                <p>• Go to <a href="https://ukyybenrsaeapesvvprd.supabase.co/storage/buckets" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Supabase Storage</a></p>
+                <p>
+                  • Go to{" "}
+                  <a
+                    href="https://ukyybenrsaeapesvvprd.supabase.co/storage/buckets"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    Supabase Storage
+                  </a>
+                </p>
                 <p>• Click "Create bucket"</p>
-                <p>• Name: <code className="bg-white px-1 rounded">images</code></p>
-                <p>• Make it <strong>Public</strong></p>
-                <p>• Set file size limit to <strong>5MB</strong></p>
-                <p>• Allow MIME types: <code className="bg-white px-1 rounded">image/*</code></p>
+                <p>
+                  • Name: <code className="bg-white px-1 rounded">images</code>
+                </p>
+                <p>
+                  • Make it <strong>Public</strong>
+                </p>
+                <p>
+                  • Set file size limit to <strong>5MB</strong>
+                </p>
+                <p>
+                  • Allow MIME types:{" "}
+                  <code className="bg-white px-1 rounded">image/*</code>
+                </p>
               </div>
             </div>
           </div>
@@ -204,7 +260,7 @@ CREATE POLICY "Enable all for users" ON admin_content
           {/* Test Connection */}
           <div>
             <h3 className="text-lg font-semibold mb-3">3. Test Connection</h3>
-            <Button 
+            <Button
               onClick={handleRunSetup}
               variant="outline"
               className="w-full"
@@ -221,7 +277,9 @@ CREATE POLICY "Enable all for users" ON admin_content
           <CheckCircle className="h-4 w-4 text-green-600" />
           <AlertTitle className="text-green-800">Setup Complete!</AlertTitle>
           <AlertDescription className="text-green-700">
-            Your admin dashboard is now connected to Supabase. All data will be stored in the database and images will be uploaded to Supabase Storage.
+            Your admin dashboard is now connected to Supabase. All data will be
+            stored in the database and images will be uploaded to Supabase
+            Storage.
           </AlertDescription>
         </Alert>
       )}

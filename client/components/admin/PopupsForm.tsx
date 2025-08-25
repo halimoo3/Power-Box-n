@@ -1,13 +1,17 @@
 import { useState, useEffect } from "react";
-import { 
-  TextField, 
+import {
+  TextField,
   TextAreaField,
   ImageUpload,
-  ActionButtons, 
-  FormSection 
+  ActionButtons,
+  FormSection,
 } from "./FormComponents";
 import { SectionHeader, SuccessToast } from "./AdminLayout";
-import { getAdminData, saveSection, PopupData } from "@/lib/admin-storage-supabase";
+import {
+  getAdminData,
+  saveSection,
+  PopupData,
+} from "@/lib/admin-storage-supabase";
 import { Megaphone, MousePointer, ExternalLink, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -30,11 +34,11 @@ export function PopupsForm() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await saveSection('popups', popups);
+      await saveSection("popups", popups);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
-      console.error('Error saving popups data:', error);
+      console.error("Error saving popups data:", error);
     } finally {
       setIsSaving(false);
     }
@@ -45,20 +49,24 @@ export function PopupsForm() {
     setPopups(adminData.popups);
   };
 
-  const updatePopup = (popupId: string, field: keyof PopupData, value: string) => {
-    setPopups(prev => prev.map(popup => 
-      popup.id === popupId 
-        ? { ...popup, [field]: value }
-        : popup
-    ));
+  const updatePopup = (
+    popupId: string,
+    field: keyof PopupData,
+    value: string,
+  ) => {
+    setPopups((prev) =>
+      prev.map((popup) =>
+        popup.id === popupId ? { ...popup, [field]: value } : popup,
+      ),
+    );
   };
 
-  const getPopupByType = (type: 'button-triggered' | 'exit-intent') => {
-    return popups.find(popup => popup.type === type);
+  const getPopupByType = (type: "button-triggered" | "exit-intent") => {
+    return popups.find((popup) => popup.type === type);
   };
 
-  const buttonPopup = getPopupByType('button-triggered');
-  const exitPopup = getPopupByType('exit-intent');
+  const buttonPopup = getPopupByType("button-triggered");
+  const exitPopup = getPopupByType("exit-intent");
 
   const PopupPreview = ({ popup }: { popup: PopupData }) => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -71,28 +79,24 @@ export function PopupsForm() {
               className="w-24 h-24 object-cover rounded-lg mx-auto"
             />
           )}
-          
-          <h3 className="text-xl font-bold text-gray-900">
-            {popup.title}
-          </h3>
-          
-          <p className="text-gray-600">
-            {popup.description}
-          </p>
-          
+
+          <h3 className="text-xl font-bold text-gray-900">{popup.title}</h3>
+
+          <p className="text-gray-600">{popup.description}</p>
+
           <div className="space-y-3">
             <button className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
               {popup.buttonText}
             </button>
-            
-            <button 
+
+            <button
               onClick={() => setPreviewPopup(null)}
               className="w-full text-gray-500 py-2 px-6 rounded-lg hover:bg-gray-50 transition-colors"
             >
               No thanks, close
             </button>
           </div>
-          
+
           <div className="text-xs text-gray-400 pt-2 border-t">
             Link: {popup.buttonLink}
           </div>
@@ -116,7 +120,10 @@ export function PopupsForm() {
 
       <Tabs defaultValue="button-triggered" className="space-y-6">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="button-triggered" className="flex items-center gap-2">
+          <TabsTrigger
+            value="button-triggered"
+            className="flex items-center gap-2"
+          >
             <MousePointer className="h-4 w-4" />
             Button-Triggered Popup
           </TabsTrigger>
@@ -142,7 +149,7 @@ export function PopupsForm() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setPreviewPopup('button-triggered')}
+                    onClick={() => setPreviewPopup("button-triggered")}
                   >
                     <Eye className="h-4 w-4 mr-2" />
                     Preview
@@ -152,7 +159,9 @@ export function PopupsForm() {
                 <TextField
                   label="Popup Title"
                   value={buttonPopup.title}
-                  onChange={(value) => updatePopup(buttonPopup.id, 'title', value)}
+                  onChange={(value) =>
+                    updatePopup(buttonPopup.id, "title", value)
+                  }
                   placeholder="Special Offer!"
                   required
                 />
@@ -160,7 +169,9 @@ export function PopupsForm() {
                 <TextAreaField
                   label="Popup Description"
                   value={buttonPopup.description}
-                  onChange={(value) => updatePopup(buttonPopup.id, 'description', value)}
+                  onChange={(value) =>
+                    updatePopup(buttonPopup.id, "description", value)
+                  }
                   placeholder="Get 10% off your first order when you subscribe to our newsletter."
                   rows={3}
                   required
@@ -169,7 +180,9 @@ export function PopupsForm() {
                 <TextField
                   label="Button Text"
                   value={buttonPopup.buttonText}
-                  onChange={(value) => updatePopup(buttonPopup.id, 'buttonText', value)}
+                  onChange={(value) =>
+                    updatePopup(buttonPopup.id, "buttonText", value)
+                  }
                   placeholder="Get My Discount"
                   required
                 />
@@ -177,7 +190,9 @@ export function PopupsForm() {
                 <TextField
                   label="Button Link/Action"
                   value={buttonPopup.buttonLink}
-                  onChange={(value) => updatePopup(buttonPopup.id, 'buttonLink', value)}
+                  onChange={(value) =>
+                    updatePopup(buttonPopup.id, "buttonLink", value)
+                  }
                   placeholder="mailto:subscribe@example.com or https://signup-page.com"
                   required
                 />
@@ -185,16 +200,22 @@ export function PopupsForm() {
                 <ImageUpload
                   label="Popup Image (Optional)"
                   value={buttonPopup.image || ""}
-                  onChange={(value) => updatePopup(buttonPopup.id, 'image', value)}
+                  onChange={(value) =>
+                    updatePopup(buttonPopup.id, "image", value)
+                  }
                   placeholder="Upload an image for the popup"
                 />
 
                 <div className="bg-blue-50 p-4 rounded-lg">
-                  <div className="text-sm font-medium text-blue-900 mb-2">Usage Tips:</div>
+                  <div className="text-sm font-medium text-blue-900 mb-2">
+                    Usage Tips:
+                  </div>
                   <ul className="text-sm text-blue-800 space-y-1">
                     <li>• Use compelling titles that create urgency</li>
                     <li>• Keep descriptions concise but persuasive</li>
-                    <li>• For email links, use format: mailto:email@domain.com</li>
+                    <li>
+                      • For email links, use format: mailto:email@domain.com
+                    </li>
                     <li>• For web links, include full URL with https://</li>
                   </ul>
                 </div>
@@ -219,7 +240,7 @@ export function PopupsForm() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setPreviewPopup('exit-intent')}
+                    onClick={() => setPreviewPopup("exit-intent")}
                   >
                     <Eye className="h-4 w-4 mr-2" />
                     Preview
@@ -229,7 +250,9 @@ export function PopupsForm() {
                 <TextField
                   label="Popup Title"
                   value={exitPopup.title}
-                  onChange={(value) => updatePopup(exitPopup.id, 'title', value)}
+                  onChange={(value) =>
+                    updatePopup(exitPopup.id, "title", value)
+                  }
                   placeholder="Wait! Don't Miss Out!"
                   required
                 />
@@ -237,7 +260,9 @@ export function PopupsForm() {
                 <TextAreaField
                   label="Popup Description"
                   value={exitPopup.description}
-                  onChange={(value) => updatePopup(exitPopup.id, 'description', value)}
+                  onChange={(value) =>
+                    updatePopup(exitPopup.id, "description", value)
+                  }
                   placeholder="Join our newsletter for exclusive snack deals and new product alerts."
                   rows={3}
                   required
@@ -246,7 +271,9 @@ export function PopupsForm() {
                 <TextField
                   label="Button Text"
                   value={exitPopup.buttonText}
-                  onChange={(value) => updatePopup(exitPopup.id, 'buttonText', value)}
+                  onChange={(value) =>
+                    updatePopup(exitPopup.id, "buttonText", value)
+                  }
                   placeholder="Subscribe Now"
                   required
                 />
@@ -254,7 +281,9 @@ export function PopupsForm() {
                 <TextField
                   label="Button Link/Action"
                   value={exitPopup.buttonLink}
-                  onChange={(value) => updatePopup(exitPopup.id, 'buttonLink', value)}
+                  onChange={(value) =>
+                    updatePopup(exitPopup.id, "buttonLink", value)
+                  }
                   placeholder="mailto:newsletter@example.com or https://newsletter-signup.com"
                   required
                 />
@@ -262,16 +291,27 @@ export function PopupsForm() {
                 <ImageUpload
                   label="Popup Image (Optional)"
                   value={exitPopup.image || ""}
-                  onChange={(value) => updatePopup(exitPopup.id, 'image', value)}
+                  onChange={(value) =>
+                    updatePopup(exitPopup.id, "image", value)
+                  }
                   placeholder="Upload an image for the popup"
                 />
 
                 <div className="bg-orange-50 p-4 rounded-lg">
-                  <div className="text-sm font-medium text-orange-900 mb-2">Exit-Intent Tips:</div>
+                  <div className="text-sm font-medium text-orange-900 mb-2">
+                    Exit-Intent Tips:
+                  </div>
                   <ul className="text-sm text-orange-800 space-y-1">
-                    <li>• Create urgency with phrases like "Wait!" or "Last chance"</li>
-                    <li>• Offer something valuable (discount, free shipping, etc.)</li>
-                    <li>• Keep it simple - users are already trying to leave</li>
+                    <li>
+                      • Create urgency with phrases like "Wait!" or "Last
+                      chance"
+                    </li>
+                    <li>
+                      • Offer something valuable (discount, free shipping, etc.)
+                    </li>
+                    <li>
+                      • Keep it simple - users are already trying to leave
+                    </li>
                     <li>• Test different offers to see what works best</li>
                   </ul>
                 </div>
@@ -294,8 +334,10 @@ export function PopupsForm() {
 
       {/* Popup Preview Modal */}
       {previewPopup && (
-        <PopupPreview 
-          popup={previewPopup === 'button-triggered' ? buttonPopup! : exitPopup!} 
+        <PopupPreview
+          popup={
+            previewPopup === "button-triggered" ? buttonPopup! : exitPopup!
+          }
         />
       )}
 

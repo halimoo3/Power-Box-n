@@ -51,7 +51,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   Shield,
   Clock,
   Truck,
-  Star
+  Star,
 };
 
 export default function DynamicIndex() {
@@ -75,8 +75,8 @@ export default function DynamicIndex() {
         document.title = data.seo.metaTitle;
       }
 
-      updateMetaTag('description', data.seo.metaDescription);
-      updateMetaTag('keywords', data.seo.metaKeywords);
+      updateMetaTag("description", data.seo.metaDescription);
+      updateMetaTag("keywords", data.seo.metaKeywords);
     };
 
     loadData();
@@ -85,11 +85,11 @@ export default function DynamicIndex() {
   const updateMetaTag = (name: string, content: string) => {
     let meta = document.querySelector(`meta[name="${name}"]`);
     if (!meta) {
-      meta = document.createElement('meta');
-      meta.setAttribute('name', name);
+      meta = document.createElement("meta");
+      meta.setAttribute("name", name);
       document.head.appendChild(meta);
     }
-    meta.setAttribute('content', content);
+    meta.setAttribute("content", content);
   };
 
   const handleBuyClick = (location: string) => {
@@ -142,13 +142,17 @@ export default function DynamicIndex() {
 
   const nextImage = () => {
     if (!adminData) return;
-    setCurrentImageIndex((prev) => (prev + 1) % adminData.hero.productImages.length);
+    setCurrentImageIndex(
+      (prev) => (prev + 1) % adminData.hero.productImages.length,
+    );
   };
 
   const prevImage = () => {
     if (!adminData) return;
     setCurrentImageIndex(
-      (prev) => (prev - 1 + adminData.hero.productImages.length) % adminData.hero.productImages.length,
+      (prev) =>
+        (prev - 1 + adminData.hero.productImages.length) %
+        adminData.hero.productImages.length,
     );
   };
 
@@ -164,9 +168,11 @@ export default function DynamicIndex() {
 
   // Show loading or default content if admin data isn't loaded yet
   if (!adminData) {
-    return <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="text-lg">Loading...</div>
-    </div>;
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
   }
 
   return (
@@ -314,7 +320,7 @@ export default function DynamicIndex() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {adminData.featuresSection.features.map((feature, index) => {
                 const IconComponent = iconMap[feature.icon] || Package;
-                
+
                 return (
                   <motion.div
                     key={feature.id}
@@ -423,9 +429,13 @@ export default function DynamicIndex() {
                         ))}
                         <Star className="h-5 w-5 text-yellow-400" />
                       </div>
-                      <span className="font-semibold">{adminData.trust.sellerRating}</span>
+                      <span className="font-semibold">
+                        {adminData.trust.sellerRating}
+                      </span>
                     </div>
-                    <p className="text-blue-100">from {adminData.trust.sellerReviewCount} reviews</p>
+                    <p className="text-blue-100">
+                      from {adminData.trust.sellerReviewCount} reviews
+                    </p>
                   </div>
                 </div>
 
@@ -437,9 +447,7 @@ export default function DynamicIndex() {
                   <h3 className="text-xl font-bold mb-2">
                     Free {adminData.trust.returnsDays}-Day Returns
                   </h3>
-                  <p className="text-blue-100">
-                    {adminData.trust.returnsText}
-                  </p>
+                  <p className="text-blue-100">{adminData.trust.returnsText}</p>
                 </div>
               </div>
 
@@ -487,9 +495,7 @@ export default function DynamicIndex() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                   <div className="absolute bottom-4 left-4 text-white">
-                    <h3 className="font-semibold text-lg">
-                      {image.title}
-                    </h3>
+                    <h3 className="font-semibold text-lg">{image.title}</h3>
                   </div>
                 </motion.div>
               ))}
@@ -647,7 +653,7 @@ export default function DynamicIndex() {
         {/* Admin Access Button - Fixed position */}
         <div className="fixed bottom-4 left-4 z-50">
           <Button
-            onClick={() => window.location.href = '/admin'}
+            onClick={() => (window.location.href = "/admin")}
             variant="outline"
             size="sm"
             className="bg-white/90 backdrop-blur border-gray-300 text-gray-700 hover:bg-white shadow-lg"
@@ -793,7 +799,8 @@ export default function DynamicIndex() {
                       ))}
                     </div>
                     <span className="ml-2 text-sm sm:text-sm text-gray-700 font-medium">
-                      {adminData.hero.rating} ⭐ ({adminData.hero.reviewCount} reviews)
+                      {adminData.hero.rating} ⭐ ({adminData.hero.reviewCount}{" "}
+                      reviews)
                     </span>
                   </div>
 
@@ -893,30 +900,51 @@ export default function DynamicIndex() {
               <DialogOverlay />
               <DialogContent className="max-w-md">
                 <DialogHeader>
-                  <DialogTitle>{adminData.popups.find(p => p.type === 'button-triggered')?.title}</DialogTitle>
+                  <DialogTitle>
+                    {
+                      adminData.popups.find(
+                        (p) => p.type === "button-triggered",
+                      )?.title
+                    }
+                  </DialogTitle>
                   <DialogDescription>
-                    {adminData.popups.find(p => p.type === 'button-triggered')?.description}
+                    {
+                      adminData.popups.find(
+                        (p) => p.type === "button-triggered",
+                      )?.description
+                    }
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
-                  {adminData.popups.find(p => p.type === 'button-triggered')?.image && (
+                  {adminData.popups.find((p) => p.type === "button-triggered")
+                    ?.image && (
                     <img
-                      src={adminData.popups.find(p => p.type === 'button-triggered')?.image}
+                      src={
+                        adminData.popups.find(
+                          (p) => p.type === "button-triggered",
+                        )?.image
+                      }
                       alt="Special Offer"
                       className="w-full h-32 object-cover rounded-lg"
                     />
                   )}
                   <Button
                     onClick={() => {
-                      const popup = adminData.popups.find(p => p.type === 'button-triggered');
+                      const popup = adminData.popups.find(
+                        (p) => p.type === "button-triggered",
+                      );
                       if (popup?.buttonLink) {
-                        window.open(popup.buttonLink, '_blank');
+                        window.open(popup.buttonLink, "_blank");
                       }
                       setShowButtonPopup(false);
                     }}
                     className="w-full"
                   >
-                    {adminData.popups.find(p => p.type === 'button-triggered')?.buttonText}
+                    {
+                      adminData.popups.find(
+                        (p) => p.type === "button-triggered",
+                      )?.buttonText
+                    }
                   </Button>
                 </div>
               </DialogContent>
@@ -932,11 +960,22 @@ export default function DynamicIndex() {
           <ExitIntentPopup
             onClose={handleCloseExitIntent}
             onSubscribe={handleSubscribe}
-            title={adminData.popups.find(p => p.type === 'exit-intent')?.title}
-            description={adminData.popups.find(p => p.type === 'exit-intent')?.description}
-            buttonText={adminData.popups.find(p => p.type === 'exit-intent')?.buttonText}
-            buttonLink={adminData.popups.find(p => p.type === 'exit-intent')?.buttonLink}
-            image={adminData.popups.find(p => p.type === 'exit-intent')?.image}
+            title={
+              adminData.popups.find((p) => p.type === "exit-intent")?.title
+            }
+            description={
+              adminData.popups.find((p) => p.type === "exit-intent")
+                ?.description
+            }
+            buttonText={
+              adminData.popups.find((p) => p.type === "exit-intent")?.buttonText
+            }
+            buttonLink={
+              adminData.popups.find((p) => p.type === "exit-intent")?.buttonLink
+            }
+            image={
+              adminData.popups.find((p) => p.type === "exit-intent")?.image
+            }
           />
         )}
       </div>

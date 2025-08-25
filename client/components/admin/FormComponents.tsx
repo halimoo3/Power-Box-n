@@ -17,22 +17,22 @@ interface TextFieldProps {
   className?: string;
 }
 
-export function TextField({ 
-  label, 
-  value, 
-  onChange, 
-  placeholder, 
-  required, 
-  className 
+export function TextField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  required,
+  className,
 }: TextFieldProps) {
   return (
     <div className={cn("space-y-2", className)}>
-      <Label htmlFor={label.replace(/\s+/g, '-').toLowerCase()}>
+      <Label htmlFor={label.replace(/\s+/g, "-").toLowerCase()}>
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </Label>
       <Input
-        id={label.replace(/\s+/g, '-').toLowerCase()}
+        id={label.replace(/\s+/g, "-").toLowerCase()}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
@@ -55,25 +55,25 @@ interface NumberFieldProps {
   className?: string;
 }
 
-export function NumberField({ 
-  label, 
-  value, 
-  onChange, 
-  min, 
-  max, 
-  step = 1, 
-  placeholder, 
-  required, 
-  className 
+export function NumberField({
+  label,
+  value,
+  onChange,
+  min,
+  max,
+  step = 1,
+  placeholder,
+  required,
+  className,
 }: NumberFieldProps) {
   return (
     <div className={cn("space-y-2", className)}>
-      <Label htmlFor={label.replace(/\s+/g, '-').toLowerCase()}>
+      <Label htmlFor={label.replace(/\s+/g, "-").toLowerCase()}>
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </Label>
       <Input
-        id={label.replace(/\s+/g, '-').toLowerCase()}
+        id={label.replace(/\s+/g, "-").toLowerCase()}
         type="number"
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
@@ -98,23 +98,23 @@ interface TextAreaFieldProps {
   className?: string;
 }
 
-export function TextAreaField({ 
-  label, 
-  value, 
-  onChange, 
-  placeholder, 
-  required, 
-  rows = 3, 
-  className 
+export function TextAreaField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  required,
+  rows = 3,
+  className,
 }: TextAreaFieldProps) {
   return (
     <div className={cn("space-y-2", className)}>
-      <Label htmlFor={label.replace(/\s+/g, '-').toLowerCase()}>
+      <Label htmlFor={label.replace(/\s+/g, "-").toLowerCase()}>
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </Label>
       <Textarea
-        id={label.replace(/\s+/g, '-').toLowerCase()}
+        id={label.replace(/\s+/g, "-").toLowerCase()}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
@@ -141,7 +141,7 @@ export function ImageUpload({
   onChange,
   placeholder = "Upload image or enter URL",
   required,
-  className
+  className,
 }: ImageUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -159,13 +159,13 @@ export function ImageUpload({
       if (uploadedUrl) {
         onChange(uploadedUrl);
       } else {
-        console.error('Failed to upload image');
+        console.error("Failed to upload image");
         // Fallback to blob URL for local preview
         const blobUrl = URL.createObjectURL(file);
         onChange(blobUrl);
       }
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error("Upload error:", error);
       // Fallback to blob URL for local preview
       const blobUrl = URL.createObjectURL(file);
       onChange(blobUrl);
@@ -181,7 +181,7 @@ export function ImageUpload({
     if (isUploading) return;
 
     const files = Array.from(e.dataTransfer.files);
-    const imageFile = files.find(file => file.type.startsWith('image/'));
+    const imageFile = files.find((file) => file.type.startsWith("image/"));
 
     if (imageFile) {
       handleFileSelect(imageFile);
@@ -196,7 +196,7 @@ export function ImageUpload({
   };
 
   const handleDeleteImage = async () => {
-    if (value && value.includes('supabase')) {
+    if (value && value.includes("supabase")) {
       // Try to delete from Supabase Storage
       await deleteImage(value);
     }
@@ -209,7 +209,7 @@ export function ImageUpload({
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </Label>
-      
+
       {/* URL Input */}
       <div className="space-y-2">
         <Input
@@ -227,9 +227,7 @@ export function ImageUpload({
           isDragging
             ? "border-blue-500 bg-blue-50"
             : "border-gray-300 hover:border-gray-400",
-          isUploading
-            ? "cursor-wait opacity-75"
-            : "cursor-pointer"
+          isUploading ? "cursor-wait opacity-75" : "cursor-pointer",
         )}
         onDragOver={(e) => {
           e.preventDefault();
@@ -288,13 +286,19 @@ export function ImageUpload({
 
           {/* Storage indicator */}
           <div className="absolute bottom-2 left-2">
-            <span className={cn(
-              "px-2 py-1 text-xs rounded-full",
-              value.includes('supabase') || value.includes('ukyybenrsaeapesvvprd')
-                ? "bg-green-100 text-green-800"
-                : "bg-orange-100 text-orange-800"
-            )}>
-              {value.includes('supabase') || value.includes('ukyybenrsaeapesvvprd') ? "Supabase" : "Local"}
+            <span
+              className={cn(
+                "px-2 py-1 text-xs rounded-full",
+                value.includes("supabase") ||
+                  value.includes("ukyybenrsaeapesvvprd")
+                  ? "bg-green-100 text-green-800"
+                  : "bg-orange-100 text-orange-800",
+              )}
+            >
+              {value.includes("supabase") ||
+              value.includes("ukyybenrsaeapesvvprd")
+                ? "Supabase"
+                : "Local"}
             </span>
           </div>
         </div>
@@ -312,12 +316,12 @@ interface ColorSelectProps {
   className?: string;
 }
 
-export function ColorSelect({ 
-  label, 
-  value, 
-  onChange, 
-  options, 
-  className 
+export function ColorSelect({
+  label,
+  value,
+  onChange,
+  options,
+  className,
 }: ColorSelectProps) {
   return (
     <div className={cn("space-y-2", className)}>
@@ -333,7 +337,7 @@ export function ColorSelect({
               option.className,
               value === option.value
                 ? "border-gray-900 scale-110"
-                : "border-gray-300"
+                : "border-gray-300",
             )}
             title={option.label}
           />
@@ -348,16 +352,20 @@ interface IconSelectProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
-  options: Array<{ value: string; label: string; icon: React.ComponentType<any> }>;
+  options: Array<{
+    value: string;
+    label: string;
+    icon: React.ComponentType<any>;
+  }>;
   className?: string;
 }
 
-export function IconSelect({ 
-  label, 
-  value, 
-  onChange, 
-  options, 
-  className 
+export function IconSelect({
+  label,
+  value,
+  onChange,
+  options,
+  className,
 }: IconSelectProps) {
   return (
     <div className={cn("space-y-2", className)}>
@@ -374,7 +382,7 @@ export function IconSelect({
                 "p-3 border rounded-lg transition-all hover:bg-gray-50",
                 value === option.value
                   ? "border-blue-500 bg-blue-50"
-                  : "border-gray-300"
+                  : "border-gray-300",
               )}
               title={option.label}
             >
@@ -397,28 +405,21 @@ interface ActionButtonsProps {
   className?: string;
 }
 
-export function ActionButtons({ 
-  onSave, 
-  onReset, 
-  isSaving = false, 
-  saveText = "Save Changes", 
-  resetText = "Reset", 
-  className 
+export function ActionButtons({
+  onSave,
+  onReset,
+  isSaving = false,
+  saveText = "Save Changes",
+  resetText = "Reset",
+  className,
 }: ActionButtonsProps) {
   return (
     <div className={cn("flex gap-3 justify-end", className)}>
-      <Button
-        variant="outline"
-        onClick={onReset}
-        disabled={isSaving}
-      >
+      <Button variant="outline" onClick={onReset} disabled={isSaving}>
         <RotateCcw className="w-4 h-4 mr-2" />
         {resetText}
       </Button>
-      <Button
-        onClick={onSave}
-        disabled={isSaving}
-      >
+      <Button onClick={onSave} disabled={isSaving}>
         <Save className="w-4 h-4 mr-2" />
         {isSaving ? "Saving..." : saveText}
       </Button>
@@ -434,11 +435,11 @@ interface FormSectionProps {
   className?: string;
 }
 
-export function FormSection({ 
-  title, 
-  description, 
-  children, 
-  className 
+export function FormSection({
+  title,
+  description,
+  children,
+  className,
 }: FormSectionProps) {
   return (
     <div className={cn("bg-white rounded-lg border p-6 space-y-6", className)}>

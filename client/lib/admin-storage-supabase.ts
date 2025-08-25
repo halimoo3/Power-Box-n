@@ -2,7 +2,7 @@ import {
   getSupabaseAdminData,
   saveSupabaseAdminData,
   saveSupabaseSection,
-  initializeSupabaseSetup,
+  checkSupabaseConnection,
   migrateLocalStorageToSupabase,
 } from "./supabase-admin";
 
@@ -23,49 +23,47 @@ export type {
 
 import { defaultAdminData, type AdminData } from "./admin-storage";
 
-// Track initialization status
-let isInitialized = false;
-let initializationPromise: Promise<boolean> | null = null;
+// Track connection status
+let connectionChecked = false;
+let isConnected = false;
 
-// Initialize Supabase if not already done
-async function ensureInitialized(): Promise<boolean> {
-  if (isInitialized) return true;
+// Check Supabase connection
+async function ensureConnection(): Promise<boolean> {
+  if (connectionChecked) return isConnected;
 
-  if (initializationPromise) {
-    return await initializationPromise;
-  }
+  try {
+    console.log("Checking Supabase connection...");
+    isConnected = await checkSupabaseConnection();
+    connectionChecked = true;
 
-  initializationPromise = (async () => {
-    try {
-      console.log("Initializing Supabase...");
-      const setupSuccess = await initializeSupabaseSetup();
-
-      if (setupSuccess) {
-        console.log("Supabase initialized successfully");
-        // Try to migrate localStorage data
+    if (isConnected) {
+      console.log("Supabase connected successfully");
+      // Try to migrate localStorage data if connection is working
+      try {
         await migrateLocalStorageToSupabase();
-        isInitialized = true;
-        return true;
-      } else {
-        console.error("Supabase initialization failed");
-        return false;
+      } catch (migrationError) {
+        console.warn("Data migration failed, but continuing with Supabase:", migrationError);
       }
-    } catch (error) {
-      console.error("Supabase initialization error:", error);
-      return false;
+    } else {
+      console.warn("Supabase connection failed, will use localStorage fallback");
     }
-  })();
 
-  return await initializationPromise;
+    return isConnected;
+  } catch (error) {
+    console.error("Supabase connection check error:", error);
+    connectionChecked = true;
+    isConnected = false;
+    return false;
+  }
 }
 
 // Get admin data with fallback to localStorage
 export async function getAdminData(): Promise<AdminData> {
   try {
-    const initialized = await ensureInitialized();
+    const connected = await ensureConnection();
 
-    if (!initialized) {
-      console.warn("Supabase not initialized, falling back to localStorage");
+    if (!connected) {
+      console.warn("Supabase not connected, using localStorage");
       return getLocalStorageData();
     }
 
@@ -119,7 +117,7 @@ export async function getAdminData(): Promise<AdminData> {
       return getLocalStorageData();
     }
   } catch (error) {
-    console.error("Error loading admin data from Supabase:", error);
+    console.error("Error fetching admin data:", error instanceof Error ? error.message : error);
     return getLocalStorageData();
   }
 }
@@ -155,10 +153,10 @@ function getLocalStorageData(): AdminData {
 // Save admin data with fallback to localStorage
 export async function saveAdminData(data: Partial<AdminData>): Promise<void> {
   try {
-    const initialized = await ensureInitialized();
+    const connected = await ensureConnection();
 
-    if (!initialized) {
-      console.warn("Supabase not initialized, saving to localStorage");
+    if (!connected) {
+      console.warn("Supabase not connected, saving to localStorage");
       saveToLocalStorage(data);
       return;
     }
@@ -174,7 +172,7 @@ export async function saveAdminData(data: Partial<AdminData>): Promise<void> {
 
     console.log("Successfully saved data to Supabase");
   } catch (error) {
-    console.error("Error saving admin data:", error);
+    console.error("Error saving admin data:", error instanceof Error ? error.message : error);
     // Fallback to localStorage
     saveToLocalStorage(data);
     throw new Error("Failed to save data");
@@ -192,7 +190,7 @@ function saveToLocalStorage(data: Partial<AdminData>): void {
     };
     localStorage.setItem("snackbox_admin_data", JSON.stringify(updated));
   } catch (error) {
-    console.error("Error saving to localStorage:", error);
+    console.error("Error saving to localStorage:", error instanceof Error ? error.message : error);
   }
 }
 
@@ -202,10 +200,10 @@ export async function saveSection<K extends keyof AdminData>(
   data: AdminData[K],
 ): Promise<void> {
   try {
-    const initialized = await ensureInitialized();
+    const connected = await ensureConnection();
 
-    if (!initialized) {
-      console.warn("Supabase not initialized, saving to localStorage");
+    if (!connected) {
+      console.warn("Supabase not connected, saving to localStorage");
       saveToLocalStorage({ [section]: data } as Partial<AdminData>);
       return;
     }
@@ -223,7 +221,7 @@ export async function saveSection<K extends keyof AdminData>(
 
     console.log(`Successfully saved ${section} to Supabase`);
   } catch (error) {
-    console.error(`Error saving section ${section}:`, error);
+    console.error(`Error saving section ${section}:`, error instanceof Error ? error.message : error);
     // Fallback to localStorage
     saveToLocalStorage({ [section]: data } as Partial<AdminData>);
     throw new Error("Failed to save section");

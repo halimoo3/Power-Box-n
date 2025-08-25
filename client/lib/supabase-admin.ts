@@ -1,25 +1,14 @@
 import { supabase } from "./supabase";
 import type { AdminData } from "./admin-storage";
 
-// Initialize Supabase database schema
-export async function initializeSupabaseSetup(): Promise<boolean> {
+// Check if Supabase is properly configured
+export async function checkSupabaseConnection(): Promise<boolean> {
   try {
-    const response = await fetch("/api/supabase-setup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Setup failed: ${response.statusText}`);
-    }
-
-    const result = await response.json();
-    console.log("Supabase setup:", result.message);
-    return result.success;
+    // Simple test to see if we can connect to Supabase
+    const { error } = await supabase.from("admin_content").select("count").limit(1);
+    return !error;
   } catch (error) {
-    console.error("Failed to initialize Supabase:", error);
+    console.warn("Supabase connection test failed:", error);
     return false;
   }
 }
@@ -87,20 +76,29 @@ export async function getSupabaseAdminData(): Promise<AdminData | null> {
       .order("section");
 
     if (error) {
-      console.error("Error fetching admin data:", error);
+      console.error("Error fetching admin data:", error.message || error);
+      return null;
+    }
+
+    if (!data || data.length === 0) {
+      console.log("No admin data found in Supabase");
       return null;
     }
 
     // Reconstruct AdminData object from database rows
     const adminData: Partial<AdminData> = {};
 
-    data?.forEach((row) => {
-      adminData[row.section as keyof AdminData] = row.data;
+    data.forEach((row) => {
+      try {
+        adminData[row.section as keyof AdminData] = row.data;
+      } catch (parseError) {
+        console.error(`Error parsing data for section ${row.section}:`, parseError);
+      }
     });
 
     return adminData as AdminData;
   } catch (error) {
-    console.error("Failed to fetch admin data:", error);
+    console.error("Failed to fetch admin data:", error instanceof Error ? error.message : error);
     return null;
   }
 }

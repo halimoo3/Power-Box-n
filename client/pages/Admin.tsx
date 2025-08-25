@@ -9,14 +9,17 @@ import { ReviewsForm } from "@/components/admin/ReviewsForm";
 import { FinalCtaForm } from "@/components/admin/FinalCtaForm";
 import { FooterForm } from "@/components/admin/FooterForm";
 import { PopupsForm } from "@/components/admin/PopupsForm";
+import { SupabaseSetup } from "@/components/admin/SupabaseSetup";
 
-type AdminSection = 'seo' | 'hero' | 'features' | 'trust' | 'gallery' | 'reviews' | 'finalcta' | 'footer' | 'popups';
+type AdminSection = 'setup' | 'seo' | 'hero' | 'features' | 'trust' | 'gallery' | 'reviews' | 'finalcta' | 'footer' | 'popups';
 
 export default function Admin() {
-  const [currentSection, setCurrentSection] = useState<AdminSection>('seo');
+  const [currentSection, setCurrentSection] = useState<AdminSection>('setup');
 
   const renderSection = () => {
     switch (currentSection) {
+      case 'setup':
+        return <SupabaseSetup />;
       case 'seo':
         return <SeoForm />;
       case 'hero':
@@ -36,7 +39,7 @@ export default function Admin() {
       case 'popups':
         return <PopupsForm />;
       default:
-        return <SeoForm />;
+        return <SupabaseSetup />;
     }
   };
 

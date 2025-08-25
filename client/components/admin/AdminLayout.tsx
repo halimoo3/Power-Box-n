@@ -24,6 +24,12 @@ interface AdminLayoutProps {
 
 const sidebarItems = [
   {
+    id: "setup",
+    label: "Supabase Setup",
+    icon: Settings,
+    description: "Database and storage configuration"
+  },
+  {
     id: "seo",
     label: "SEO Settings",
     icon: Search,

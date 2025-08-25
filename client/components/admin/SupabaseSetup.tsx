@@ -16,7 +16,7 @@ import {
   Database,
   ImageIcon,
 } from "lucide-react";
-import { initializeSupabaseSetup } from "@/lib/supabase-admin";
+import { checkSupabaseConnection } from "@/lib/supabase-admin";
 
 export function SupabaseSetup() {
   const [setupStatus, setSetupStatus] = useState<{
@@ -59,36 +59,92 @@ CREATE POLICY "Enable all for users" ON admin_content
     setSetupMessage("");
 
     try {
-      const success = await initializeSupabaseSetup();
+      // Try to call the server setup endpoint
+      const response = await fetch("/api/supabase-setup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-      if (success) {
-        setSetupStatus({
-          database: true,
-          storage: true,
-          testing: true,
-        });
-        setSetupMessage("✅ Supabase setup completed successfully!");
+      if (response.ok) {
+        const result = await response.json();
+
+        if (result.success) {
+          setSetupStatus({
+            database: true,
+            storage: true,
+            testing: true,
+          });
+          setSetupMessage("✅ Supabase setup completed successfully!");
+        } else {
+          setSetupStatus({
+            database: false,
+            storage: false,
+            testing: false,
+            error: result.message || "Setup failed",
+          });
+          setSetupMessage(
+            "❌ Setup failed. Please follow the manual setup instructions below.",
+          );
+        }
       } else {
+        // Fallback: just test the connection
+        const connected = await checkSupabaseConnection();
+
+        if (connected) {
+          setSetupStatus({
+            database: true,
+            storage: true,
+            testing: true,
+          });
+          setSetupMessage("✅ Supabase connection test successful!");
+        } else {
+          setSetupStatus({
+            database: false,
+            storage: false,
+            testing: false,
+            error: "Connection test failed",
+          });
+          setSetupMessage(
+            "❌ Connection failed. Please follow the manual setup instructions below.",
+          );
+        }
+      }
+    } catch (error) {
+      // Fallback: just test the connection
+      try {
+        const connected = await checkSupabaseConnection();
+
+        if (connected) {
+          setSetupStatus({
+            database: true,
+            storage: true,
+            testing: true,
+          });
+          setSetupMessage("✅ Supabase connection test successful!");
+        } else {
+          setSetupStatus({
+            database: false,
+            storage: false,
+            testing: false,
+            error: "Connection test failed",
+          });
+          setSetupMessage(
+            "❌ Connection failed. Please follow the manual setup instructions below.",
+          );
+        }
+      } catch (testError) {
         setSetupStatus({
           database: false,
           storage: false,
           testing: false,
-          error: "Setup failed - please check the manual setup instructions",
+          error: testError instanceof Error ? testError.message : "Unknown error",
         });
         setSetupMessage(
-          "❌ Setup failed. Please follow the manual setup instructions below.",
+          "❌ Setup error. Please follow the manual setup instructions below.",
         );
       }
-    } catch (error) {
-      setSetupStatus({
-        database: false,
-        storage: false,
-        testing: false,
-        error: error instanceof Error ? error.message : "Unknown error",
-      });
-      setSetupMessage(
-        "❌ Setup error. Please follow the manual setup instructions below.",
-      );
     } finally {
       setIsSetupRunning(false);
     }

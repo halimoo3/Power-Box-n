@@ -1,17 +1,12 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
+import { getAdminData, ReviewData } from "@/lib/admin-storage-supabase";
 
-interface CustomerReview {
-  id: number;
-  name: string;
-  photo: string;
-  rating: number;
-  review: string;
-}
-
-const customerReviews: CustomerReview[] = [
+// Fallback data if admin data is not available
+const fallbackReviews: ReviewData[] = [
   {
-    id: 1,
+    id: "fallback-1",
     name: "Sarah Johnson",
     photo:
       "https://images.unsplash.com/photo-1494790108755-2616b612b1-1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
@@ -20,7 +15,7 @@ const customerReviews: CustomerReview[] = [
       "Amazing variety of snacks! Perfect for my office team. The breakfast bars are especially delicious and the packaging is so professional.",
   },
   {
-    id: 2,
+    id: "fallback-2",
     name: "Michael Chen",
     photo:
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
@@ -29,7 +24,7 @@ const customerReviews: CustomerReview[] = [
       "Great value for 42 snacks! My college daughter loves these. Fast delivery and everything arrived in perfect condition.",
   },
   {
-    id: 3,
+    id: "fallback-3",
     name: "Emily Rodriguez",
     photo:
       "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80",
@@ -38,7 +33,7 @@ const customerReviews: CustomerReview[] = [
       "The perfect gift! Sent this to my brother in college and he was thrilled. Quality snacks and beautiful presentation with the greeting card.",
   },
   {
-    id: 4,
+    id: "fallback-4",
     name: "David Thompson",
     photo:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
@@ -47,7 +42,7 @@ const customerReviews: CustomerReview[] = [
       "Ordered for my team at work. Everyone loved the variety - from healthy options to tasty treats. Will definitely order again!",
   },
   {
-    id: 5,
+    id: "fallback-5",
     name: "Jessica Martinez",
     photo:
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
@@ -56,7 +51,7 @@ const customerReviews: CustomerReview[] = [
       "Exceeded my expectations! The box is beautifully packaged and the snacks are high quality. Perfect for busy days when I need quick energy.",
   },
   {
-    id: 6,
+    id: "fallback-6",
     name: "Robert Wilson",
     photo:
       "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
@@ -67,16 +62,38 @@ const customerReviews: CustomerReview[] = [
 ];
 
 export function CustomerReviews() {
+  const [reviewsData, setReviewsData] = useState({
+    sectionTitle: "What Our Customers Say",
+    sectionDescription:
+      "Join thousands of satisfied customers who love our nutritious snack boxes",
+    reviews: fallbackReviews,
+    trustIndicatorText: "Based on verified customer reviews",
+  });
+
+  // Load dynamic data from admin on mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const adminData = await getAdminData();
+        if (adminData.reviews && adminData.reviews.reviews.length > 0) {
+          setReviewsData(adminData.reviews);
+        }
+      } catch (error) {
+        console.error("Failed to load reviews data:", error);
+        // Keep fallback data if loading fails
+      }
+    };
+    loadData();
+  }, []);
   return (
     <section className="relative py-16 sm:py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            What Our Customers Say
+            {reviewsData.sectionTitle}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Join thousands of satisfied customers who love our nutritious snack
-            boxes
+            {reviewsData.sectionDescription}
           </p>
         </div>
 
@@ -99,7 +116,7 @@ export function CustomerReviews() {
             }}
           >
             {/* First set of cards */}
-            {customerReviews.map((review) => (
+            {reviewsData.reviews.map((review) => (
               <div
                 key={review.id}
                 className="flex-shrink-0 w-72 bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl p-5 border-2 hover:shadow-2xl transition-all duration-300"
@@ -145,7 +162,7 @@ export function CustomerReviews() {
             ))}
 
             {/* Duplicate set for seamless loop */}
-            {customerReviews.map((review) => (
+            {reviewsData.reviews.map((review) => (
               <div
                 key={`duplicate-${review.id}`}
                 className="flex-shrink-0 w-72 bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl p-5 border-2 hover:shadow-2xl transition-all duration-300"
@@ -203,7 +220,7 @@ export function CustomerReviews() {
               <Star className="h-4 w-4 text-yellow-500 fill-current" />
             </div>
             <span className="text-sm font-medium text-gray-700">
-              Based on verified customer reviews
+              {reviewsData.trustIndicatorText}
             </span>
           </div>
         </div>
